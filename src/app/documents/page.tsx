@@ -1,28 +1,13 @@
 import Link from "next/link";
-import DocumentsList from "./DocumentList";
-
-async function getDocuments() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("Không tải được dữ liệu tài liệu");
-  }
-
-  const data = await res.json();
-  return data.data || [];
-}
+import DocumentsList from "../component/DocumentList";
+import { getDocument } from "@/services/documentService";
 
 export default async function DocumentsPage() {
   let documents = [];
   let error = null;
 
   try {
-    documents = await getDocuments();
+    documents = await getDocument();
   } catch (err: any) {
     error = err.message || "Không thể tải tài liệu.";
   }

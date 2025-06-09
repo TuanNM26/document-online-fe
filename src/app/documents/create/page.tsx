@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createDocument } from "@/services/documentService";
 
 export default function CreateDocumentPage() {
   const router = useRouter();
@@ -32,21 +33,7 @@ export default function CreateDocumentPage() {
       formData.append("field", field);
       formData.append("file", file);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Lỗi không xác định từ server");
-      }
+      await createDocument(formData);
       router.push("/documents");
     } catch (err: any) {
       console.error(err);

@@ -1,0 +1,103 @@
+import { Document } from "../types/document";
+
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
+export async function fetchDocumentById(id: string): Promise<Document> {
+  const res = await fetch(`${API_URL}/documents/${id}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Không thể tải tài liệu.");
+  }
+
+  return res.json();
+}
+
+export async function updateDocument(
+  id: string,
+  formData: FormData,
+  token: string
+): Promise<void> {
+  const res = await fetch(`${API_URL}/documents/${id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Cập nhật tài liệu thất bại.");
+  }
+}
+
+export async function deleteDocument(
+  id: string,
+  token?: string
+): Promise<void> {
+  const res = await fetch(`${API_URL}/documents/${id}`, {
+    method: "DELETE",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Xóa tài liệu thất bại.");
+  }
+}
+
+export async function getDocumentDetail(id: string): Promise<Document> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error(`API Error for document ${id}: ${res.status} - ${errorText}`);
+    throw new Error(
+      `Failed to fetch document ${id}: ${errorText || res.statusText}`
+    );
+  }
+
+  const documentData: Document = await res.json();
+  return documentData;
+}
+
+export async function getDocument() {
+  const res = await fetch(`${API_URL}/documents`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Không tải được dữ liệu tài liệu");
+  }
+
+  const data = await res.json();
+  return data.data || [];
+}
+
+export async function createDocument(formData: FormData): Promise<void> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error(
+      `API Error when creating document: ${res.status} - ${errorText}`
+    );
+    throw new Error(`Không thể tạo tài liệu: ${errorText || res.statusText}`);
+  }
+}

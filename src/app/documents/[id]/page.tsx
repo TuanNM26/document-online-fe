@@ -1,42 +1,12 @@
 import Link from "next/link";
+import { getDocumentDetail} from "../../../services/documentService";
+import { Document } from "@/types/document";
 
-interface Document {
-  _id: string;
-  title: string;
-  description?: string;
-  content?: string;
-  filePath?: string;
-  fileType?: string;
-  userId: string;
-  field: string;
-  totalPages?: number;
-  username?: string;
-}
 
 interface DocumentDetailPageProps {
   params: {
     id: string;
   };
-}
-
-async function getDocumentDetail(id: string): Promise<Document> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
-  if (!res.ok) {
-    const errorText = await res.text();
-    console.error(`API Error for document ${id}: ${res.status} - ${errorText}`);
-    throw new Error(
-      `Failed to fetch document ${id}: ${errorText || res.statusText}`
-    );
-  }
-
-  const documentData: Document = await res.json();
-
-  return documentData;
 }
 
 export default async function DocumentDetailPage({

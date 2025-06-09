@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { deleteDocument } from "@/services/documentService";
 
 interface Document {
   _id: string;
@@ -26,23 +27,8 @@ export default function DocumentsList({ initialDocuments }: Props) {
     setError(null);
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            // Nếu có token thì thêm vào đây
-            // Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await deleteDocument(id /*, token nếu cần */);
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Xóa tài liệu thất bại.");
-      }
-
-      // Xóa thành công, cập nhật lại danh sách
       setDocuments((prev) => prev.filter((doc) => doc._id !== id));
     } catch (err: any) {
       setError(err.message || "Lỗi khi xóa tài liệu.");

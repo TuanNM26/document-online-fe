@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { fetchDocumentById, updateDocument } from "@/services/documentService";
 
 interface Document {
   _id: string;
@@ -40,23 +41,9 @@ export default function EditDocumentPage() {
   }, []);
 
   useEffect(() => {
-    const fetchDocument = async () => {
+    const getDocument = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
-          {
-            cache: "no-store",
-          }
-        );
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(
-            errorData.message || "Không thể tải tài liệu để chỉnh sửa."
-          );
-        }
-
-        const data: Document = await res.json();
+        const data = await fetchDocumentById(id);
         setDocument(data);
         setTitle(data.title);
         setDescription(data.description || "");
@@ -71,7 +58,7 @@ export default function EditDocumentPage() {
     };
 
     if (id) {
-      fetchDocument();
+      getDocument();
     }
   }, [id]);
 
@@ -97,21 +84,9 @@ export default function EditDocumentPage() {
         formData.append("file", selectedFile);
       }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
+      if (!token) throw new Error("Không tìm thấy token xác thực.");
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Cập nhật tài liệu thất bại.");
-      }
+      await updateDocument(id, formData, token);
       router.push(`/documents/${id}`);
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi cập nhật tài liệu.");
