@@ -1,10 +1,8 @@
-// app/(auth)/login/page.tsx
-
-'use client'; // Đánh dấu đây là Client Component vì nó sẽ có tương tác form
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Sử dụng useRouter từ next/navigation cho App Router
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,7 +16,6 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    // Đây là nơi bạn sẽ gọi API đăng nhập của backend
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, {
         method: 'POST',
@@ -32,17 +29,9 @@ export default function LoginPage() {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Đăng nhập thất bại.');
       }
-
-      // Xử lý khi đăng nhập thành công
       const data = await res.json();
-      // Lưu token hoặc thông tin người dùng vào Local Storage, Context, hoặc HttpOnly Cookie
-      // (Lưu ý: Lưu token vào HttpOnly cookie là an toàn nhất, cần backend hỗ trợ)
-      // Ví dụ đơn giản cho Local Storage (không khuyến nghị cho production):
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user)); // Lưu thông tin user nếu backend trả về
-
-      alert('Đăng nhập thành công!'); // Hoặc dùng toast notification
-      router.push('/documents'); // Chuyển hướng đến trang tài liệu sau khi đăng nhập
+      localStorage.setItem('authToken', data.accessToken);
+      router.push('/documents'); 
     } catch (err: any) {
       setError(err.message || 'Đã xảy ra lỗi khi đăng nhập.');
     } finally {
