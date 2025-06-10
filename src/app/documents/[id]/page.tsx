@@ -5,7 +5,7 @@ import {
 } from "../../../services/documentService";
 import { Document } from "@/types/document";
 import PDFViewerClient from "@/app/component/pdfViewerClient";
-import TextViewerClient from "@/app/component/textViewerClient"; 
+import TextViewerClient from "@/app/component/textViewerClient";
 
 interface DocumentDetailPageProps {
   params: {
@@ -19,21 +19,15 @@ export default async function DocumentDetailPage({
   let document: Document | null = null;
   let error: string | null = null;
   const { id } = params;
-
-  // pages sẽ chứa thông tin cho từng "trang" từ API
   let pages: {
     pageNumber: number;
-    filePath: string; // Đối với TXT, đây sẽ là đường dẫn đến toàn bộ file TXT
+    filePath: string;
     [key: string]: any;
   }[] = [];
 
   try {
     document = await getDocumentDetail(id);
     if (document?.fileType === "pdf" || document?.fileType === "txt") {
-      // Gọi API getDocumentPages cho cả PDF và TXT
-      // Giả định API này trả về một mảng các đối tượng,
-      // mỗi đối tượng có pageNumber và filePath trỏ đến tài nguyên của trang đó.
-      // Với TXT, mỗi object trong mảng sẽ có cùng filePath (đường dẫn đến file TXT gốc).
       pages = await getDocumentPages(id);
     }
   } catch (err: any) {
@@ -96,9 +90,6 @@ export default async function DocumentDetailPage({
         </div>
       );
     } else if (document.fileType === "txt" && pages.length > 0) {
-      // Với file TXT, API cũng trả về một mảng 'pages'.
-      // Mỗi 'page' trong mảng này có cùng 'filePath' trỏ đến toàn bộ file TXT.
-      // Chúng ta sẽ lặp qua các 'page' và truyền 'filePath' và 'pageNumber' vào TextViewerClient.
       return (
         <div className="space-y-4 mt-8">
           <h3 className="text-xl font-semibold mb-2">Xem từng trang:</h3>
@@ -109,18 +100,16 @@ export default async function DocumentDetailPage({
                 key={index}
                 className="border rounded overflow-hidden shadow-sm"
               >
-                {/* Truyền filePath của toàn bộ file TXT và pageNumber vào TextViewerClient */}
                 <TextViewerClient
-                  filePath={page.filePath} // Đây là đường dẫn đến toàn bộ file TXT
-                  pageNumber={page.pageNumber} // Đây là số trang được API trả về
-                  charsPerPage={2000} // Có thể điều chỉnh số ký tự mỗi trang ở đây
+                  filePath={page.filePath}
+                  pageNumber={page.pageNumber}
+                  charsPerPage={2000}
                 />
               </div>
             ))}
         </div>
       );
     } else if (document.content) {
-      // Trường hợp hiển thị nội dung trực tiếp (không phải file)
       return (
         <div className="mt-8 prose max-w-none">
           <h3 className="text-xl font-semibold mb-2">Nội dung:</h3>
@@ -152,6 +141,12 @@ export default async function DocumentDetailPage({
               className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded text-sm"
             >
               Chỉnh sửa
+            </Link>
+            <Link
+              href={`/documents/${document._id}/addPage`}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm"
+            >
+              Thêm trang
             </Link>
           </div>
         </div>

@@ -1,5 +1,3 @@
-// app/documents/[id]/edit/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -13,9 +11,8 @@ interface Document {
   description?: string;
   content?: string;
   field?: string;
-  filePath?: string; // Giữ lại filePath hiện tại để hiển thị hoặc tham chiếu
-  fileType?: string; // Để hiển thị loại file hiện tại
-  // Thêm các trường khác mà bạn muốn chỉnh sửa
+  filePath?: string;
+  fileType?: string;
 }
 
 export default function EditDocumentPage() {
@@ -189,8 +186,6 @@ export default function EditDocumentPage() {
               onChange={(e) => setField(e.target.value)}
             />
           </div>
-
-          {/* Phần thêm mới để upload file */}
           <div className="mb-6">
             <label
               htmlFor="fileUpload"
@@ -203,7 +198,7 @@ export default function EditDocumentPage() {
               id="fileUpload"
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
               onChange={handleFileChange}
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" // Chỉ chấp nhận các loại file này
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
             />
             {selectedFile && (
               <p className="mt-2 text-sm text-gray-600">

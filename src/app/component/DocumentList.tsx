@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { deleteDocument } from "@/services/documentService"; // Đảm bảo đường dẫn này đúng
+import { deleteDocument } from "@/services/documentService"; 
 
 interface Document {
   _id: string;
@@ -106,7 +106,7 @@ export default function DocumentsList({ initialDocuments }: Props) {
                   Chỉnh sửa
                 </Link>
                 <button
-                  onClick={() => handleShowConfirm(doc._id)} // Gọi hàm hiển thị modal
+                  onClick={() => handleShowConfirm(doc._id)}
                   disabled={loadingId === doc._id}
                   className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >

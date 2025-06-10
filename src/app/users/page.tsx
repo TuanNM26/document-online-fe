@@ -2,7 +2,7 @@
 
 import { deleteUser } from "@/services/userService";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // nếu dùng next.js 13 app router
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;

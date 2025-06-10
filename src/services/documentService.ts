@@ -2,10 +2,10 @@ import { Document, DocumentPage } from "../types/document";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 interface DocumentApiResponse {
-  data: any[]; // Thay any[] bằng kiểu Document[] thực tế của bạn
+  data: any[];
   currentPage: number;
   totalPages: number;
-  totalItems?: number; // Có thể có hoặc không
+  totalItems?: number;
 }
 export async function fetchDocumentById(id: string): Promise<Document> {
   const res = await fetch(`${API_URL}/documents/${id}`, {

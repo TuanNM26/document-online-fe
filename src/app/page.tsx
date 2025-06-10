@@ -1,6 +1,5 @@
-// app/page.tsx
 
-import Link from 'next/link'; // Import Link từ Next.js để điều hướng
+import Link from 'next/link'; 
 
 export default function HomePage() {
   return (

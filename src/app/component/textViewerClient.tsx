@@ -1,35 +1,29 @@
-// app/component/textViewerClient.tsx
-"use client"; // Đây là một client component
+"use client";
 
 import React, { useEffect, useState } from "react";
 
 interface TextViewerClientProps {
   filePath: string;
-  pageNumber: number; // Thêm pageNumber để xác định đây là trang nào
-  charsPerPage?: number; // Tùy chọn: số ký tự mỗi trang
+  pageNumber: number;
+  charsPerPage?: number;
 }
 
 export default function TextViewerClient({
   filePath,
   pageNumber,
-  charsPerPage = 2000, // Mặc định 2000 ký tự mỗi trang
+  charsPerPage = 2000,
 }: TextViewerClientProps) {
   const [pageContent, setPageContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [fullText, setFullText] = useState<string | null>(null); // Lưu trữ toàn bộ văn bản
-
-  // Sử dụng một biến cục bộ để theo dõi xem đã fetch toàn bộ text chưa
-  // Hoặc bạn có thể truyền toàn bộ text từ component cha nếu nó đã được fetch một lần
-  const textCache: { [key: string]: string } = {}; // Cache tạm thời
+  const [fullText, setFullText] = useState<string | null>(null);
+  const textCache: { [key: string]: string } = {};
 
   useEffect(() => {
     const fetchAndPaginateText = async () => {
       try {
         setLoading(true);
         let currentFullText: string;
-
-        // Kiểm tra trong cache trước để tránh fetch lại nhiều lần cho cùng một file
         if (textCache[filePath]) {
           currentFullText = textCache[filePath];
         } else {
@@ -40,12 +34,10 @@ export default function TextViewerClient({
             );
           }
           currentFullText = await response.text();
-          textCache[filePath] = currentFullText; // Lưu vào cache
+          textCache[filePath] = currentFullText;
         }
 
         setFullText(currentFullText);
-
-        // Logic phân trang đơn giản: chia theo số ký tự
         const startIndex = (pageNumber - 1) * charsPerPage;
         const endIndex = startIndex + charsPerPage;
         const contentForThisPage = currentFullText.substring(
@@ -62,7 +54,7 @@ export default function TextViewerClient({
     };
 
     fetchAndPaginateText();
-  }, [filePath, pageNumber, charsPerPage]); // Dependencies
+  }, [filePath, pageNumber, charsPerPage]);
 
   if (loading) {
     return (

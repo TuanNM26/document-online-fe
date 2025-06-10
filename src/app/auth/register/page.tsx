@@ -1,6 +1,4 @@
-// app/(auth)/register/page.tsx
-
-"use client"; // Đánh dấu đây là Client Component
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";

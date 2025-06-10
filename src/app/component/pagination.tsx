@@ -1,6 +1,6 @@
-"use client"; // Đánh dấu component này là client
+"use client";
 
-import { useRouter, useSearchParams } from "next/navigation"; // Import useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 
@@ -18,12 +18,12 @@ export default function Pagination({
   queryParams = {},
 }: PaginationProps) {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Sử dụng useSearchParams để lấy params hiện tại
+  const searchParams = useSearchParams();
   const [selectedLimit, setSelectedLimit] = useState(
     Number(queryParams.limit) || 10
   );
 
-  // Cập nhật selectedLimit khi queryParams.limit thay đổi từ bên ngoài
+
   useEffect(() => {
     const limitFromQuery = Number(queryParams.limit);
     if (!isNaN(limitFromQuery) && limitFromQuery !== selectedLimit) {
@@ -31,27 +31,25 @@ export default function Pagination({
     }
   }, [queryParams.limit, selectedLimit]);
 
-  // Sử dụng useCallback để memoize hàm buildLink
+
   const buildLink = useCallback(
     (page: number, limit: number) => {
-      const newParams = new URLSearchParams(searchParams.toString()); // Lấy tất cả params hiện có
+      const newParams = new URLSearchParams(searchParams.toString());  
       newParams.set("page", page.toString());
       newParams.set("limit", limit.toString());
       return `${basePath}?${newParams.toString()}`;
     },
     [basePath, searchParams]
-  ); // searchParams cũng là một dependency
+  );
 
   const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLimit = Number(e.target.value);
     setSelectedLimit(newLimit);
-    // Chuyển hướng về trang 1 với giới hạn mới
     router.push(buildLink(1, newLimit));
   };
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
-    // Hiển thị một số trang xung quanh trang hiện tại để không quá dài
     const maxPageNumbersToShow = 5;
     let startPage = Math.max(
       1,
