@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { deleteDocument } from "@/services/documentService"; // Đảm bảo đường dẫn này đúng
 
@@ -24,34 +24,34 @@ export default function DocumentsList({ initialDocuments }: Props) {
     null
   );
 
-  // useEffect để cập nhật documents khi initialDocuments thay đổi (ví dụ khi chuyển trang)
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    setToken(localStorage.getItem("authToken"));
+  }, []);
+
   React.useEffect(() => {
     setDocuments(initialDocuments);
   }, [initialDocuments]);
 
-  // Hàm hiển thị modal xác nhận
   const handleShowConfirm = useCallback((id: string) => {
     setDocumentToDeleteId(id);
     setShowConfirmModal(true);
   }, []);
 
-  // Hàm đóng modal
   const handleCloseConfirm = useCallback(() => {
     setShowConfirmModal(false);
     setDocumentToDeleteId(null);
   }, []);
 
-  // Hàm xử lý xóa tài liệu sau khi xác nhận
   const handleDeleteConfirmed = useCallback(async () => {
     if (!documentToDeleteId) return;
 
     setLoadingId(documentToDeleteId);
     setError(null);
-    setShowConfirmModal(false); // Đóng modal ngay lập tức
+    setShowConfirmModal(false);
 
     try {
-      // Sử dụng hàm mock deleteDocument_MOCK
-      await deleteDocument(documentToDeleteId); // Gọi service xóa tài liệu
+      await deleteDocument(documentToDeleteId, token as string);
       setDocuments((prev) =>
         prev.filter((doc) => doc._id !== documentToDeleteId)
       );

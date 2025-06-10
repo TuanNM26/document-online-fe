@@ -30,7 +30,7 @@ export default function Header() {
             </li>
             <li>
               <a href="/documents" className="hover:underline">
-                About
+                Documents
               </a>
             </li>
             {isAdmin && (

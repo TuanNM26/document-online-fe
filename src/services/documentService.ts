@@ -46,7 +46,7 @@ export async function deleteDocument(
   const res = await fetch(`${API_URL}/documents/${id}`, {
     method: "DELETE",
     headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -75,11 +75,12 @@ export async function getDocumentDetail(id: string): Promise<Document> {
 
 export async function getDocument(
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  query: string = ""
 ): Promise<DocumentApiResponse> {
   try {
     const response = await fetch(
-      `${API_URL}/documents?page=${page}&limit=${limit}`,
+      `${API_URL}/documents?q=${query}&page=${page}&limit=${limit}`,
       { cache: "no-store" }
     );
 

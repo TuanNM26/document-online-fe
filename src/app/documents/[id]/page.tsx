@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { getDocumentDetail} from "../../../services/documentService";
+import { getDocumentDetail } from "../../../services/documentService";
 import { Document } from "@/types/document";
-
 
 interface DocumentDetailPageProps {
   params: {

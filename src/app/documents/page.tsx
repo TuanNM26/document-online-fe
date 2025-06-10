@@ -10,10 +10,15 @@ export const dynamic = "force-dynamic";
 export default async function DocumentsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; limit?: string };
+  searchParams: {
+    page?: string;
+    limit?: string;
+    query?: string;
+  };
 }) {
   const page = getNumberParam(searchParams.page, 1);
   const limit = getNumberParam(searchParams.limit, 10);
+  const query = searchParams.query || "";
 
   let documents = [];
   let error = null;
@@ -21,7 +26,7 @@ export default async function DocumentsPage({
   let totalPages = 1;
 
   try {
-    const response = await getDocument(page, limit);
+    const response = await getDocument(page, limit, query);
     documents = response.data;
     currentPage = response.currentPage;
     totalPages = response.totalPages;
@@ -42,7 +47,24 @@ export default async function DocumentsPage({
       <h1 className="text-4xl font-bold text-gray-900 text-center mb-10">
         Danh Sách Tài liệu
       </h1>
-
+      <form
+        method="GET"
+        className="flex items-center gap-4 mb-6 w-full max-w-3xl mx-auto"
+      >
+        <input
+          type="text"
+          name="query"
+          placeholder="Tìm kiếm tài liệu..."
+          defaultValue={searchParams.query || ""}
+          className="flex-1 px-4 py-3 rounded-lg border border-gray-300"
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg"
+        >
+          Tìm
+        </button>
+      </form>
       <DocumentsList initialDocuments={documents} />
 
       <div className="text-center mt-10">
@@ -58,7 +80,10 @@ export default async function DocumentsPage({
         currentPage={currentPage}
         totalPages={totalPages}
         basePath="/documents"
-        queryParams={{ limit: limit.toString() }}
+        queryParams={{
+          limit: limit.toString(),
+          query: query,
+        }}
       />
     </div>
   );
