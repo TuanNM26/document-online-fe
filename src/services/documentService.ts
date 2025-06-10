@@ -1,7 +1,12 @@
 import { Document } from "../types/document";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-
+interface DocumentApiResponse {
+  data: any[]; // Thay any[] bằng kiểu Document[] thực tế của bạn
+  currentPage: number;
+  totalPages: number;
+  totalItems?: number; // Có thể có hoặc không
+}
 export async function fetchDocumentById(id: string): Promise<Document> {
   const res = await fetch(`${API_URL}/documents/${id}`, {
     cache: "no-store",
@@ -52,12 +57,9 @@ export async function deleteDocument(
 }
 
 export async function getDocumentDetail(id: string): Promise<Document> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/documents/${id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     const errorText = await res.text();
@@ -71,25 +73,41 @@ export async function getDocumentDetail(id: string): Promise<Document> {
   return documentData;
 }
 
-export async function getDocument() {
-  const res = await fetch(`${API_URL}/documents`, {
-    cache: "no-store",
-  });
+export async function getDocument(
+  page: number = 1,
+  limit: number = 10
+): Promise<DocumentApiResponse> {
+  try {
+    const response = await fetch(
+      `${API_URL}/documents?page=${page}&limit=${limit}`,
+      { cache: "no-store" }
+    );
 
-  if (!res.ok) {
-    throw new Error("Không tải được dữ liệu tài liệu");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Không thể tải tài liệu từ API.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Lỗi trong getDocument:", error);
+    throw error;
   }
-
-  const data = await res.json();
-  return data.data || [];
 }
 
-export async function createDocument(formData: FormData): Promise<void> {
+export async function createDocument(
+  formData: FormData,
+  token: string
+): Promise<void> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents`,
     {
       method: "POST",
       body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 

@@ -1,8 +1,8 @@
-"use client"; // Đánh dấu component này là client
+"use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
-import { deleteDocument } from "@/services/documentService";
+import { deleteDocument } from "@/services/documentService"; // Đảm bảo đường dẫn này đúng
 
 interface Document {
   _id: string;
@@ -19,23 +19,49 @@ export default function DocumentsList({ initialDocuments }: Props) {
   const [documents, setDocuments] = useState<Document[]>(initialDocuments);
   const [error, setError] = useState<string | null>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
+  const [documentToDeleteId, setDocumentToDeleteId] = useState<string | null>(
+    null
+  );
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Bạn có chắc muốn xóa tài liệu này?")) return;
+  // useEffect để cập nhật documents khi initialDocuments thay đổi (ví dụ khi chuyển trang)
+  React.useEffect(() => {
+    setDocuments(initialDocuments);
+  }, [initialDocuments]);
 
-    setLoadingId(id);
+  // Hàm hiển thị modal xác nhận
+  const handleShowConfirm = useCallback((id: string) => {
+    setDocumentToDeleteId(id);
+    setShowConfirmModal(true);
+  }, []);
+
+  // Hàm đóng modal
+  const handleCloseConfirm = useCallback(() => {
+    setShowConfirmModal(false);
+    setDocumentToDeleteId(null);
+  }, []);
+
+  // Hàm xử lý xóa tài liệu sau khi xác nhận
+  const handleDeleteConfirmed = useCallback(async () => {
+    if (!documentToDeleteId) return;
+
+    setLoadingId(documentToDeleteId);
     setError(null);
+    setShowConfirmModal(false); // Đóng modal ngay lập tức
 
     try {
-      await deleteDocument(id /*, token nếu cần */);
-
-      setDocuments((prev) => prev.filter((doc) => doc._id !== id));
+      // Sử dụng hàm mock deleteDocument_MOCK
+      await deleteDocument(documentToDeleteId); // Gọi service xóa tài liệu
+      setDocuments((prev) =>
+        prev.filter((doc) => doc._id !== documentToDeleteId)
+      );
     } catch (err: any) {
       setError(err.message || "Lỗi khi xóa tài liệu.");
     } finally {
       setLoadingId(null);
+      setDocumentToDeleteId(null);
     }
-  };
+  }, [documentToDeleteId]);
 
   return (
     <div>
@@ -50,7 +76,7 @@ export default function DocumentsList({ initialDocuments }: Props) {
       )}
 
       {documents.length === 0 ? (
-        <p>Không có tài liệu nào.</p>
+        <p className="text-center text-gray-600">Không có tài liệu nào.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((doc) => (
@@ -61,7 +87,7 @@ export default function DocumentsList({ initialDocuments }: Props) {
               <div className="p-6">
                 <Link href={`/documents/${doc._id}`} className="block">
                   <h2 className="text-2xl font-semibold text-blue-600 hover:underline mb-2 line-clamp-1">
-                   Tiêu đề:  {doc.title}
+                    Tiêu đề: {doc.title}
                   </h2>
                 </Link>
                 <p className="text-gray-700 line-clamp-3">
@@ -80,15 +106,41 @@ export default function DocumentsList({ initialDocuments }: Props) {
                   Chỉnh sửa
                 </Link>
                 <button
-                  onClick={() => handleDelete(doc._id)}
+                  onClick={() => handleShowConfirm(doc._id)} // Gọi hàm hiển thị modal
                   disabled={loadingId === doc._id}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium"
+                  className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loadingId === doc._id ? "Đang xóa..." : "Xóa"}
                 </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Custom Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto">
+            <h3 className="text-lg font-semibold mb-4">Xác nhận xóa</h3>
+            <p className="text-gray-700 mb-6">
+              Bạn có chắc chắn muốn xóa tài liệu này không?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCloseConfirm}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleDeleteConfirmed}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

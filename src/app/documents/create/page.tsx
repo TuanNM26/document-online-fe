@@ -33,7 +33,7 @@ export default function CreateDocumentPage() {
       formData.append("field", field);
       formData.append("file", file);
 
-      await createDocument(formData);
+      await createDocument(formData, token as string);
       router.push("/documents");
     } catch (err: any) {
       console.error(err);

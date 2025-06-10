@@ -1,13 +1,30 @@
-import Link from "next/link";
-import DocumentsList from "../component/DocumentList";
+import { headers } from "next/headers";
 import { getDocument } from "@/services/documentService";
+import DocumentsList from "../component/documentList";
+import Pagination from "../component/pagination";
+import Link from "next/link";
+import { getNumberParam } from "@/utils/getNumberParam";
 
-export default async function DocumentsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function DocumentsPage({
+  searchParams,
+}: {
+  searchParams: { page?: string; limit?: string };
+}) {
+  const page = getNumberParam(searchParams.page, 1);
+  const limit = getNumberParam(searchParams.limit, 10);
+
   let documents = [];
   let error = null;
+  let currentPage = 1;
+  let totalPages = 1;
 
   try {
-    documents = await getDocument();
+    const response = await getDocument(page, limit);
+    documents = response.data;
+    currentPage = response.currentPage;
+    totalPages = response.totalPages;
   } catch (err: any) {
     error = err.message || "Không thể tải tài liệu.";
   }
@@ -25,7 +42,9 @@ export default async function DocumentsPage() {
       <h1 className="text-4xl font-bold text-gray-900 text-center mb-10">
         Danh Sách Tài liệu
       </h1>
+
       <DocumentsList initialDocuments={documents} />
+
       <div className="text-center mt-10">
         <Link
           href="/documents/create"
@@ -34,6 +53,13 @@ export default async function DocumentsPage() {
           + Thêm Tài liệu Mới
         </Link>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath="/documents"
+        queryParams={{ limit: limit.toString() }}
+      />
     </div>
   );
 }
