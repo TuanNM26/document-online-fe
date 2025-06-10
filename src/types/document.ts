@@ -10,3 +10,9 @@ export interface Document {
   totalPages?: number;
   username?: string;
 }
+
+export interface DocumentPage {
+  pageNumber: number;
+  filePath: string;
+  [key: string]: any; 
+}

@@ -1,4 +1,4 @@
-import { Document } from "../types/document";
+import { Document, DocumentPage } from "../types/document";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 interface DocumentApiResponse {
@@ -95,6 +95,22 @@ export async function getDocument(
     console.error("Lỗi trong getDocument:", error);
     throw error;
   }
+}
+
+export async function getDocumentPages(id: string): Promise<
+  {
+    pageNumber: number;
+    filePath: string;
+    [key: string]: any;
+  }[]
+> {
+  const res = await fetch(`${API_URL}/pages/document/${id}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Không thể tải các trang tài liệu");
+
+  const json = await res.json();
+  return json.data || [];
 }
 
 export async function createDocument(

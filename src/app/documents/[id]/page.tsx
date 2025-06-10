@@ -1,6 +1,11 @@
 import Link from "next/link";
-import { getDocumentDetail } from "../../../services/documentService";
+import {
+  getDocumentDetail,
+  getDocumentPages,
+} from "../../../services/documentService";
 import { Document } from "@/types/document";
+import PDFViewerClient from "@/app/component/pdfViewerClient";
+import TextViewerClient from "@/app/component/textViewerClient"; 
 
 interface DocumentDetailPageProps {
   params: {
@@ -13,12 +18,26 @@ export default async function DocumentDetailPage({
 }: DocumentDetailPageProps) {
   let document: Document | null = null;
   let error: string | null = null;
-  const { id } = await params;
+  const { id } = params;
+
+  // pages sẽ chứa thông tin cho từng "trang" từ API
+  let pages: {
+    pageNumber: number;
+    filePath: string; // Đối với TXT, đây sẽ là đường dẫn đến toàn bộ file TXT
+    [key: string]: any;
+  }[] = [];
+
   try {
     document = await getDocumentDetail(id);
+    if (document?.fileType === "pdf" || document?.fileType === "txt") {
+      // Gọi API getDocumentPages cho cả PDF và TXT
+      // Giả định API này trả về một mảng các đối tượng,
+      // mỗi đối tượng có pageNumber và filePath trỏ đến tài nguyên của trang đó.
+      // Với TXT, mỗi object trong mảng sẽ có cùng filePath (đường dẫn đến file TXT gốc).
+      pages = await getDocumentPages(id);
+    }
   } catch (err: any) {
-    error = err.message || `Không thể tải chi tiết tài liệu ${params.id}.`;
-    console.error(err);
+    error = err.message || `Không thể tải dữ liệu tài liệu ${params.id}.`;
   }
 
   if (error) {
@@ -58,30 +77,50 @@ export default async function DocumentDetailPage({
       </div>
     );
   }
+
   const renderDocumentContent = () => {
-    if (document.filePath && document.fileType === "pdf") {
+    if (document.fileType === "pdf" && pages.length > 0) {
       return (
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-2">Xem File:</h3>
-          <iframe
-            src={document.filePath}
-            className="w-full"
-            style={{ height: "80vh", border: "none" }}
-            title={document.title}
-          >
-            Trình duyệt của bạn không hỗ trợ hiển thị PDF.
-            <a
-              href={document.filePath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              Tải file về.
-            </a>
-          </iframe>
+        <div className="space-y-4 mt-8">
+          <h3 className="text-xl font-semibold mb-2">Xem từng trang:</h3>
+          {pages
+            .sort((a, b) => a.pageNumber - b.pageNumber)
+            .map((page, index) => (
+              <div
+                key={index}
+                className="border rounded overflow-hidden shadow-sm"
+              >
+                <PDFViewerClient filePath={page.filePath} />
+              </div>
+            ))}
+        </div>
+      );
+    } else if (document.fileType === "txt" && pages.length > 0) {
+      // Với file TXT, API cũng trả về một mảng 'pages'.
+      // Mỗi 'page' trong mảng này có cùng 'filePath' trỏ đến toàn bộ file TXT.
+      // Chúng ta sẽ lặp qua các 'page' và truyền 'filePath' và 'pageNumber' vào TextViewerClient.
+      return (
+        <div className="space-y-4 mt-8">
+          <h3 className="text-xl font-semibold mb-2">Xem từng trang:</h3>
+          {pages
+            .sort((a, b) => a.pageNumber - b.pageNumber)
+            .map((page, index) => (
+              <div
+                key={index}
+                className="border rounded overflow-hidden shadow-sm"
+              >
+                {/* Truyền filePath của toàn bộ file TXT và pageNumber vào TextViewerClient */}
+                <TextViewerClient
+                  filePath={page.filePath} // Đây là đường dẫn đến toàn bộ file TXT
+                  pageNumber={page.pageNumber} // Đây là số trang được API trả về
+                  charsPerPage={2000} // Có thể điều chỉnh số ký tự mỗi trang ở đây
+                />
+              </div>
+            ))}
         </div>
       );
     } else if (document.content) {
+      // Trường hợp hiển thị nội dung trực tiếp (không phải file)
       return (
         <div className="mt-8 prose max-w-none">
           <h3 className="text-xl font-semibold mb-2">Nội dung:</h3>
