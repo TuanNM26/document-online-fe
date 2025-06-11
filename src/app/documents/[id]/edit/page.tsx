@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { fetchDocumentById, updateDocument } from "@/services/documentService";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 interface Document {
   _id: string;
@@ -16,6 +17,7 @@ interface Document {
 }
 
 export default function EditDocumentPage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();

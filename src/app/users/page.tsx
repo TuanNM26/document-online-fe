@@ -3,6 +3,7 @@
 import { deleteUser } from "@/services/userService";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAdminGuard } from "../component/adminProtect";
 
 interface User {
   id: string;
@@ -15,6 +16,7 @@ interface User {
 }
 
 export default function UsersPage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();

@@ -6,8 +6,10 @@ import Link from "next/link";
 
 import { updatePageFileService } from "../../../../../../services/pageService";
 import { useCurrentUser } from "@/hooks/customHooks";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 export default function EditPageFilePage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const params = useParams();
   const router = useRouter();
   const { id, pageId } = params;

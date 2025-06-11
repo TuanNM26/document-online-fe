@@ -42,6 +42,11 @@ export default function Header() {
                 Documents
               </a>
             </li>
+            <li>
+              <a href="/bookmarks" className="hover:underline">
+                Bookmarks
+              </a>
+            </li>
             {isAdmin && (
               <>
                 <li>

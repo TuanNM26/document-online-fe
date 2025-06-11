@@ -5,8 +5,10 @@ import { useRouter, useParams } from "next/navigation";
 import { fetchUserById, updateUser } from "@/services/userService";
 import type { User } from "@/types/user";
 import { fetchRoles } from "@/services/roleService";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 export default function EditUserPage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const router = useRouter();
   const params = useParams();
   const userId = params.id as string;

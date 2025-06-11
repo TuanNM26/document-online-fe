@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { createRole } from "@/services/roleService";
 import { useRouter } from "next/navigation";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 export default function CreateRolePage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const [roleName, setRoleName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);

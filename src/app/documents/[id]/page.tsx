@@ -9,6 +9,7 @@ import TextViewerClient from "@/app/component/textViewerClient";
 import { useCurrentUser } from "@/hooks/customHooks";
 import DocumentActions from "@/app/component/documentAction";
 import PageActions from "@/app/component/pageAction";
+import ScrollToPage from "@/app/component/scrollPage";
 
 interface DocumentDetailPageProps {
   params: {
@@ -85,6 +86,7 @@ export default async function DocumentDetailPage({
             .sort((a, b) => a.pageNumber - b.pageNumber)
             .map((page, index) => (
               <div
+                id={`page-${page._id}`}
                 key={page._id || index}
                 className="border rounded overflow-hidden shadow-sm p-4"
               >
@@ -104,6 +106,7 @@ export default async function DocumentDetailPage({
             .sort((a, b) => a.pageNumber - b.pageNumber)
             .map((page, index) => (
               <div
+                id={`page-${page._id}`}
                 key={index}
                 className="border rounded overflow-hidden shadow-sm"
               >
@@ -180,6 +183,7 @@ export default async function DocumentDetailPage({
         )}
 
         {renderDocumentContent()}
+        <ScrollToPage />
       </div>
     </div>
   );

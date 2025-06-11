@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadPage } from "@/services/pageService";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 export default function AddPage({ params }: { params: { id: string } }) {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 

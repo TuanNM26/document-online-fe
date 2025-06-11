@@ -4,8 +4,10 @@ import { fetchRoles, deleteRole } from "@/services/roleService";
 import { Role } from "@/types/role";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAdminGuard } from "../component/adminProtect";
 
 export default function RolesPage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();

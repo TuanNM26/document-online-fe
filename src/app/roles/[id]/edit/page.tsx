@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Role } from "@/types/role";
 import { fetchRoleById, updateRole } from "@/services/roleService";
+import { useAdminGuard } from "@/app/component/adminProtect";
 
 export default function EditRolePage() {
+  useAdminGuard({ redirectTo: "/forbidden" });
   const { id } = useParams();
   const router = useRouter();
 
