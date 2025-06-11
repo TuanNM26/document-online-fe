@@ -118,16 +118,13 @@ export async function createDocument(
   formData: FormData,
   token: string
 ): Promise<void> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/documents`,
-    {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const res = await fetch(`${API_URL}/documents`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!res.ok) {
     const errorText = await res.text();
@@ -142,10 +139,9 @@ export async function deletePageService(
   pageId: string,
   token: string
 ): Promise<void> {
-  const response = await fetch(`/api/pages/${pageId}`, {
+  const response = await fetch(`${API_URL}/pages/${pageId}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });

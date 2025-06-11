@@ -8,6 +8,7 @@ import PDFViewerClient from "@/app/component/pdfViewerClient";
 import TextViewerClient from "@/app/component/textViewerClient";
 import { useCurrentUser } from "@/hooks/customHooks";
 import DocumentActions from "@/app/component/documentAction";
+import PageActions from "@/app/component/pageAction";
 
 interface DocumentDetailPageProps {
   params: {
@@ -22,6 +23,7 @@ export default async function DocumentDetailPage({
   let error: string | null = null;
   const { id } = params;
   let pages: {
+    _id?: string;
     pageNumber: number;
     filePath: string;
     [key: string]: any;
@@ -83,10 +85,13 @@ export default async function DocumentDetailPage({
             .sort((a, b) => a.pageNumber - b.pageNumber)
             .map((page, index) => (
               <div
-                key={index}
-                className="border rounded overflow-hidden shadow-sm"
+                key={page._id || index}
+                className="border rounded overflow-hidden shadow-sm p-4"
               >
                 <PDFViewerClient filePath={page.filePath} />
+                {page._id && document && (
+                  <PageActions pageId={page._id} documentId={document._id} />
+                )}
               </div>
             ))}
         </div>
@@ -107,6 +112,9 @@ export default async function DocumentDetailPage({
                   pageNumber={page.pageNumber}
                   charsPerPage={2000}
                 />
+                {page._id && document && (
+                  <PageActions pageId={page._id} documentId={document._id} />
+                )}
               </div>
             ))}
         </div>
