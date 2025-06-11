@@ -22,8 +22,7 @@ export default function PDFViewer({ filePath }: PDFViewerProps) {
       for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
         const page = await pdf.getPage(pageNumber);
         const scale = 1.5;
-        const rotation = page.rotate || 0;
-        const viewport = page.getViewport({ scale, rotation: 0 });
+        const viewport = page.getViewport({ scale, rotation: page.rotate });
 
         const canvas = canvasRefs.current[pageNumber - 1];
         if (!canvas) continue;

@@ -99,6 +99,7 @@ export async function getDocument(
 
 export async function getDocumentPages(id: string): Promise<
   {
+    _id: string;
     pageNumber: number;
     filePath: string;
     [key: string]: any;
@@ -134,5 +135,22 @@ export async function createDocument(
       `API Error when creating document: ${res.status} - ${errorText}`
     );
     throw new Error(`Không thể tạo tài liệu: ${errorText || res.statusText}`);
+  }
+}
+
+export async function deletePageService(
+  pageId: string,
+  token: string
+): Promise<void> {
+  const response = await fetch(`/api/pages/${pageId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Lỗi khi xóa trang.");
   }
 }

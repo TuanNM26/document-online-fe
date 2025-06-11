@@ -2,9 +2,17 @@
 
 import React from "react";
 import { useCurrentUser } from "@/hooks/customHooks";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const currentUser = useCurrentUser();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    router.push("/auth/login");
+  };
 
   if (currentUser === undefined || currentUser === null) {
     return (
@@ -15,6 +23,7 @@ export default function Header() {
       </header>
     );
   }
+
   const isAdmin = currentUser?.role?.roleName === "admin";
 
   return (
@@ -22,7 +31,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <a className="text-xl font-semibold">My Next App</a>
         <nav>
-          <ul className="flex gap-4 text-sm">
+          <ul className="flex gap-4 text-sm items-center">
             <li>
               <a href="/" className="hover:underline">
                 Home
@@ -47,6 +56,14 @@ export default function Header() {
                 </li>
               </>
             )}
+            <li>
+              <button
+                onClick={handleLogout}
+                className="ml-4 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white"
+              >
+                Logout
+              </button>
+            </li>
           </ul>
         </nav>
       </div>

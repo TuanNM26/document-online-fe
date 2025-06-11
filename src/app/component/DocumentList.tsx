@@ -2,7 +2,9 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { deleteDocument } from "@/services/documentService"; 
+
+import { deleteDocument } from "@/services/documentService";
+import { useCurrentUser } from "@/hooks/customHooks"; // Import useCurrentUser
 
 interface Document {
   _id: string;
@@ -23,8 +25,10 @@ export default function DocumentsList({ initialDocuments }: Props) {
   const [documentToDeleteId, setDocumentToDeleteId] = useState<string | null>(
     null
   );
-
   const [token, setToken] = useState<string | null>(null);
+
+  const currentUser = useCurrentUser(); // Get current user
+
   useEffect(() => {
     setToken(localStorage.getItem("authToken"));
   }, []);
@@ -45,11 +49,9 @@ export default function DocumentsList({ initialDocuments }: Props) {
 
   const handleDeleteConfirmed = useCallback(async () => {
     if (!documentToDeleteId) return;
-
     setLoadingId(documentToDeleteId);
     setError(null);
     setShowConfirmModal(false);
-
     try {
       await deleteDocument(documentToDeleteId, token as string);
       setDocuments((prev) =>
@@ -61,7 +63,9 @@ export default function DocumentsList({ initialDocuments }: Props) {
       setLoadingId(null);
       setDocumentToDeleteId(null);
     }
-  }, [documentToDeleteId]);
+  }, [documentToDeleteId, token]); // Add token to dependency array
+
+  const isAdmin = currentUser?.role?.roleName === "admin"; // Check if user is admin
 
   return (
     <div>
@@ -98,21 +102,24 @@ export default function DocumentsList({ initialDocuments }: Props) {
                   {doc.username || "Chưa có mô tả cho tài liệu này."}
                 </p>
               </div>
-              <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
-                <Link
-                  href={`/documents/${doc._id}/edit`}
-                  className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                >
-                  Chỉnh sửa
-                </Link>
-                <button
-                  onClick={() => handleShowConfirm(doc._id)}
-                  disabled={loadingId === doc._id}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loadingId === doc._id ? "Đang xóa..." : "Xóa"}
-                </button>
-              </div>
+              {/* Conditionally render edit and delete buttons */}
+              {isAdmin && (
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+                  <Link
+                    href={`/documents/${doc._id}/edit`}
+                    className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                  >
+                    Chỉnh sửa
+                  </Link>
+                  <button
+                    onClick={() => handleShowConfirm(doc._id)}
+                    disabled={loadingId === doc._id}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loadingId === doc._id ? "Đang xóa..." : "Xóa"}
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

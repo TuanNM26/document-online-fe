@@ -6,6 +6,8 @@ import {
 import { Document } from "@/types/document";
 import PDFViewerClient from "@/app/component/pdfViewerClient";
 import TextViewerClient from "@/app/component/textViewerClient";
+import { useCurrentUser } from "@/hooks/customHooks";
+import DocumentActions from "@/app/component/documentAction";
 
 interface DocumentDetailPageProps {
   params: {
@@ -135,20 +137,7 @@ export default async function DocumentDetailPage({
           >
             &larr; Quay lại danh sách
           </Link>
-          <div className="flex gap-2">
-            <Link
-              href={`/documents/${document._id}/edit`}
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded text-sm"
-            >
-              Chỉnh sửa
-            </Link>
-            <Link
-              href={`/documents/${document._id}/addPage`}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm"
-            >
-              Thêm trang
-            </Link>
-          </div>
+          {document && <DocumentActions documentId={document._id} />}
         </div>
 
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
