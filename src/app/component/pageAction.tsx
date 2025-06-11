@@ -3,7 +3,14 @@
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { useCurrentUser } from "@/hooks/customHooks";
-import { deletePageService } from "../../services/documentService";
+import {
+  createBookmarkService,
+  deletePageService,
+} from "../../services/pageService";
+import { useRouter } from "next/navigation";
+
+// Giả định bạn có service API để tạo bookmark
+// import { createBookmarkService } from "../../services/bookmarkService"; // <-- Thêm import này
 
 interface PageActionsProps {
   pageId: string;
@@ -14,7 +21,11 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
   const currentUser = useCurrentUser();
   const isAdmin = currentUser?.role?.roleName === "admin";
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCreatingBookmark, setIsCreatingBookmark] = useState(false); // State loading cho bookmark
+  const [bookmarkNote, setBookmarkNote] = useState(""); // State cho input ghi chú bookmark
+  const router = useRouter();
 
+  // Xử lý xóa trang (không thay đổi)
   const handleDeleteClick = useCallback(async () => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa trang này không?"
@@ -30,32 +41,83 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
     try {
       setIsDeleting(true);
       await deletePageService(pageId, token);
+      alert("Đã xóa trang thành công!");
+      router.refresh();
     } catch (error: any) {
       console.error("Lỗi khi xóa trang:", error);
       alert(`Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`);
     } finally {
       setIsDeleting(false);
     }
-  }, [pageId]);
+  }, [pageId, router]);
 
-  if (!isAdmin) return null;
-
+  const handleCreateBookmarkClick = useCallback(async () => {
+    if (!bookmarkNote.trim()) {
+      alert("Vui lòng nhập ghi chú cho bookmark.");
+      return;
+    }
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      alert("Bạn cần đăng nhập để thực hiện hành động này.");
+      return;
+    }
+    setIsCreatingBookmark(true);
+    try {
+      console.log({ documentId, pageId, note: bookmarkNote }, token);
+      await createBookmarkService(
+        { documentId, pageId, note: bookmarkNote },
+        token
+      );
+      setBookmarkNote("");
+      router.push("/bookmarks");
+    } catch (error: any) {
+      console.error("Lỗi khi tạo bookmark:", error);
+      alert(
+        `Không thể tạo bookmark: ${error?.message || "Lỗi không xác định"}`
+      );
+    } finally {
+      setIsCreatingBookmark(false);
+    }
+  }, [documentId, pageId, bookmarkNote, router]);
+  if (!currentUser) {
+    return null;
+  }
   return (
-    <div className="mt-4 flex justify-end gap-2">
-      <Link
-        href={`/documents/${documentId}/pages/${pageId}/edit`}
-        className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-      >
-        Chỉnh sửa trang
-      </Link>
-
+    <div className="mt-4 flex justify-end items-center gap-2">
+      {" "}
+      <input
+        type="text"
+        value={bookmarkNote}
+        onChange={(e) => setBookmarkNote(e.target.value)}
+        placeholder="Ghi chú bookmark"
+        className="border rounded-md px-2 py-1 text-sm w-1/3"
+        disabled={isCreatingBookmark}
+      />
       <button
-        onClick={handleDeleteClick}
-        disabled={isDeleting}
-        className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={handleCreateBookmarkClick}
+        disabled={isCreatingBookmark || !bookmarkNote.trim()}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed" // Điều chỉnh style
       >
-        {isDeleting ? "Đang xóa..." : "Xóa trang"}
+        {isCreatingBookmark ? "Đang tạo..." : "Tạo Bookmark"}
       </button>
+      {/* Các nút chỉ hiển thị cho Admin */}
+      {isAdmin && (
+        <>
+          <Link
+            href={`/documents/${documentId}/pages/${pageId}/edit`}
+            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+          >
+            Chỉnh sửa trang
+          </Link>
+          <button
+            onClick={handleDeleteClick}
+            disabled={isDeleting}
+            className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDeleting ? "Đang xóa..." : "Xóa trang"}
+          </button>
+        </>
+      )}
     </div>
   );
 }

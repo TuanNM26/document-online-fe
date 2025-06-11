@@ -134,19 +134,3 @@ export async function createDocument(
     throw new Error(`Không thể tạo tài liệu: ${errorText || res.statusText}`);
   }
 }
-
-export async function deletePageService(
-  pageId: string,
-  token: string
-): Promise<void> {
-  const response = await fetch(`${API_URL}/pages/${pageId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Lỗi khi xóa trang.");
-  }
-}
