@@ -36,6 +36,7 @@ export default async function DocumentDetailPage({
     if (["pdf", "txt", "xlsx"].includes(document?.fileType || "")) {
       pages = await getDocumentPages(id);
     }
+    console.log(pages);
   } catch (err: any) {
     error = err.message || `Không thể tải dữ liệu tài liệu ${params.id}.`;
   }
@@ -114,7 +115,6 @@ export default async function DocumentDetailPage({
                 <TextViewerClient
                   filePath={page.filePath}
                   pageNumber={page.pageNumber}
-                  charsPerPage={2000}
                 />
                 {page._id && document && (
                   <PageActions pageId={page._id} documentId={document._id} />

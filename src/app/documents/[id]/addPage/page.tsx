@@ -27,7 +27,7 @@ export default function AddPage({ params }: { params: { id: string } }) {
       alert("Tải lên thành công!");
       router.push(`/documents/${params.id}`);
     } catch (err) {
-      alert("Không thể upload file. Vui lòng thử lại.");
+      alert(`Không thể upload file. Vui lòng thử lại.${err}`);
     }
   };
 
