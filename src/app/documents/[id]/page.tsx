@@ -11,6 +11,7 @@ import DocumentActions from "@/app/component/documentAction";
 import PageActions from "@/app/component/pageAction";
 import ScrollToPage from "@/app/component/scrollPage";
 import ExcelViewerClient from "@/app/component/xlxsViewClient";
+import ClientDocumentSection from "@/app/component/ClientDocumentSection";
 
 interface DocumentDetailPageProps {
   params: {
@@ -186,7 +187,6 @@ export default async function DocumentDetailPage({
         {document.fileType && (
           <p className="text-gray-600 text-sm mb-2">
             Loại file: {document.fileType}{" "}
-            {document.totalPages && `(${document.totalPages} trang)`}
           </p>
         )}
         {document.filePath && (
@@ -202,9 +202,7 @@ export default async function DocumentDetailPage({
             </a>
           </p>
         )}
-
-        {renderDocumentContent()}
-        <ScrollToPage />
+        <ClientDocumentSection document={document} pages={pages} />
       </div>
     </div>
   );

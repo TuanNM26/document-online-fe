@@ -9,13 +9,17 @@ import {
 } from "../../services/pageService";
 import { useRouter } from "next/navigation";
 
-
 interface PageActionsProps {
   pageId: string;
   documentId: string;
+  onPageDeleted?: (pageId: string) => void;
 }
 
-export default function PageActions({ pageId, documentId }: PageActionsProps) {
+export default function PageActions({
+  pageId,
+  documentId,
+  onPageDeleted,
+}: PageActionsProps) {
   const currentUser = useCurrentUser();
   const isAdmin = currentUser?.role?.roleName === "admin";
   const [isDeleting, setIsDeleting] = useState(false);
@@ -39,7 +43,7 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
       setIsDeleting(true);
       await deletePageService(pageId, token);
       alert("Đã xóa trang thành công!");
-      router.refresh();
+      onPageDeleted?.(pageId);
     } catch (error: any) {
       alert(`Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`);
     } finally {
