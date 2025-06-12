@@ -15,12 +15,12 @@ export default function EditRolePage() {
   const [roleName, setRoleName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
     const loadRole = async () => {
       if (typeof id !== "string") return;
 
-      const data = await fetchRoleById(id);
+      const data = await fetchRoleById(id, token!);
       if (data) {
         setRole(data);
         setRoleName(data.roleName);
@@ -39,7 +39,11 @@ export default function EditRolePage() {
       return;
     }
 
-    const success = await updateRole(id as string, { roleName, description });
+    const success = await updateRole(
+      id as string,
+      { roleName, description },
+      token!
+    );
 
     if (success) {
       alert("Cập nhật thành công!");

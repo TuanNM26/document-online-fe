@@ -10,6 +10,7 @@ import { useCurrentUser } from "@/hooks/customHooks";
 import DocumentActions from "@/app/component/documentAction";
 import PageActions from "@/app/component/pageAction";
 import ScrollToPage from "@/app/component/scrollPage";
+import ExcelViewerClient from "@/app/component/xlxsViewClient";
 
 interface DocumentDetailPageProps {
   params: {
@@ -120,6 +121,13 @@ export default async function DocumentDetailPage({
                 )}
               </div>
             ))}
+        </div>
+      );
+    } else if (document.fileType === "xlsx" && document.filePath) {
+      return (
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-2">Nội dung file Excel:</h3>
+          <ExcelViewerClient fileUrl={document.filePath} />
         </div>
       );
     } else if (document.content) {

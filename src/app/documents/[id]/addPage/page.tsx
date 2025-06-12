@@ -28,7 +28,6 @@ export default function AddPage({ params }: { params: { id: string } }) {
       router.push(`/documents/${params.id}`);
     } catch (err) {
       alert("Không thể upload file. Vui lòng thử lại.");
-      console.error(err);
     }
   };
 
@@ -38,8 +37,6 @@ export default function AddPage({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-semibold mb-6 text-gray-800">
           Thêm Trang Tài Liệu
         </h1>
-
-        {/* File Input */}
         <div className="mb-4">
           <label
             htmlFor="file-upload"
@@ -61,8 +58,6 @@ export default function AddPage({ params }: { params: { id: string } }) {
             </p>
           )}
         </div>
-
-        {/* Action Buttons */}
         <div className="mt-6 flex justify-end space-x-3">
           <button
             type="button"

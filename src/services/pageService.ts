@@ -25,7 +25,6 @@ export async function uploadPage(
     const data: UploadPageResponse = await res.json();
     return data;
   } catch (error) {
-    console.error("Lỗi khi upload trang:", error);
     throw error;
   }
 }
@@ -96,7 +95,6 @@ export async function createBookmarkService(
     try {
       errorData = await response.json();
     } catch (jsonError) {
-      console.error("Failed to parse error response as JSON:", jsonError);
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
     throw new Error(

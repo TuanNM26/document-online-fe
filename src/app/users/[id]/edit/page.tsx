@@ -21,11 +21,11 @@ export default function EditUserPage() {
   const [roles, setRoles] = useState<{ id: string; roleName: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
     const loadUser = async () => {
       if (!userId) return;
-      const data = await fetchUserById(userId);
+      const data = await fetchUserById(userId, token!);
       if (data) {
         setUser(data);
         setUsername(data.username);
@@ -34,10 +34,9 @@ export default function EditUserPage() {
         setName(data.role.roleName || "");
       }
       try {
-        const roleList = await fetchRoles();
+        const roleList = await fetchRoles(token!);
         setRoles(roleList);
       } catch (error) {
-        console.error("Lỗi khi tải roles:", error);
       }
       setLoading(false);
     };
@@ -48,7 +47,7 @@ export default function EditUserPage() {
     e.preventDefault();
     setSaving(true);
 
-    const success = await updateUser(userId, { username, email, role });
+    const success = await updateUser(userId, token!, { username, email, role });
 
     if (success) {
       router.push("/users");

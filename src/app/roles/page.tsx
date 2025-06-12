@@ -11,10 +11,10 @@ export default function RolesPage() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
     const loadRoles = async () => {
-      const data = await fetchRoles();
+      const data = await fetchRoles(token!);
       setRoles(data);
       setLoading(false);
     };
@@ -25,7 +25,7 @@ export default function RolesPage() {
     const confirmed = window.confirm("Bạn có chắc chắn muốn xóa role này?");
     if (!confirmed) return;
 
-    const success = await deleteRole(id);
+    const success = await deleteRole(id, token!);
     if (success) {
       setRoles((prev) => prev.filter((role) => role.id !== id));
     } else {

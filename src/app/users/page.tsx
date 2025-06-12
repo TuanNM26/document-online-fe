@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteUser } from "@/services/userService";
+import { deleteUser, fetchUsers } from "@/services/userService";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminGuard } from "../component/adminProtect";
@@ -20,26 +20,28 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users`, {
-      cache: "no-store",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data.data);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch users", err);
-      })
-      .finally(() => setLoading(false));
+    const getUsers = async () => {
+      if (!token) return;
+
+      try {
+        const userList = await fetchUsers(token);
+        setUsers(userList);
+      } catch (err) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUsers();
   }, []);
 
   async function handleDelete(id: string): Promise<void> {
     const confirmed = window.confirm("Bạn có chắc chắn muốn xóa user này?");
     if (!confirmed) return;
 
-    const success = await deleteUser(id);
+    const success = await deleteUser(id, token!);
     if (success) {
       setUsers((prev) => prev.filter((user) => user.id !== id));
     } else {

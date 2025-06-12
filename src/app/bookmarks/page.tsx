@@ -49,7 +49,6 @@ export default function BookmarkPage() {
         const userBookmarksResponse = await getBookmarksService(token);
         setBookmarks(userBookmarksResponse.data);
       } catch (err: any) {
-        console.error("Lỗi khi tải bookmark:", err);
         setError(
           `Không thể tải bookmark: ${err.message || "Lỗi không xác định"}`
         );
@@ -77,7 +76,6 @@ export default function BookmarkPage() {
           prevBookmarks.filter((bookmark) => bookmark._id !== bookmarkId)
         );
       } catch (err: any) {
-        console.error("Lỗi khi xóa bookmark:", err);
         alert(`Không thể xóa bookmark: ${err.message || "Lỗi không xác định"}`);
       } finally {
         setDeletingBookmarkId(null);

@@ -226,8 +226,6 @@ export default function EditDocumentPage() {
               </p>
             )}
           </div>
-          {/* Kết thúc phần upload file */}
-
           {error && <p className="text-red-500 text-sm italic mb-4">{error}</p>}
 
           <div className="flex items-center justify-end gap-4">

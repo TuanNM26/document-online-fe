@@ -21,7 +21,6 @@ export default function EditPageFilePage() {
   const currentUser = useCurrentUser();
   const isAdmin = currentUser?.role?.roleName === "admin";
 
-  // Gọi tất cả các Hooks ở đây, trước bất kỳ câu lệnh return có điều kiện nào
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length > 0) {
@@ -53,7 +52,6 @@ export default function EditPageFilePage() {
       setError(null);
 
       try {
-        console.log(token);
         await updatePageFileService(
           id as string,
           pageId as string,
@@ -64,7 +62,6 @@ export default function EditPageFilePage() {
         alert("File trang đã được cập nhật thành công!");
         router.push(`/documents/${id}`);
       } catch (err: any) {
-        console.error("Lỗi khi cập nhật file trang:", err);
         setError(
           `Không thể cập nhật file trang: ${
             err.message || "Lỗi không xác định"
@@ -77,7 +74,6 @@ export default function EditPageFilePage() {
     [id, pageId, selectedFile, router]
   );
 
-  // **Thực hiện kiểm tra quyền admin SAU KHI gọi tất cả các Hooks**
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
@@ -98,8 +94,6 @@ export default function EditPageFilePage() {
       </div>
     );
   }
-
-  // Nếu là admin, render form chỉnh sửa
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">

@@ -36,7 +36,6 @@ export default function CreateDocumentPage() {
       await createDocument(formData, token as string);
       router.push("/documents");
     } catch (err: any) {
-      console.error(err);
       setError(err.message || "Đã xảy ra lỗi khi tạo tài liệu.");
     } finally {
       setLoading(false);

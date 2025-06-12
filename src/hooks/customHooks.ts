@@ -12,7 +12,6 @@ export function useCurrentUser() {
       const user = getUserFromToken(token);
       setCurrentUser(user);
     }
-    console.log("không có token", token);
   }, []);
 
   return currentUser;

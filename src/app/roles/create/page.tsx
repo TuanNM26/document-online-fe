@@ -11,12 +11,12 @@ export default function CreateRolePage() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const token = localStorage.getItem("authToken");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const success = await createRole({ roleName, description });
+    const success = await createRole({ roleName, description }, token!);
 
     setLoading(false);
     if (success) {

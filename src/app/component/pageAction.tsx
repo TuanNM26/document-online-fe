@@ -44,7 +44,6 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
       alert("Đã xóa trang thành công!");
       router.refresh();
     } catch (error: any) {
-      console.error("Lỗi khi xóa trang:", error);
       alert(`Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`);
     } finally {
       setIsDeleting(false);
@@ -63,7 +62,6 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
     }
     setIsCreatingBookmark(true);
     try {
-      console.log({ documentId, pageId, note: bookmarkNote }, token);
       await createBookmarkService(
         { documentId, pageId, note: bookmarkNote },
         token
@@ -71,7 +69,6 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
       setBookmarkNote("");
       router.push("/bookmarks");
     } catch (error: any) {
-      console.error("Lỗi khi tạo bookmark:", error);
       alert(
         `Không thể tạo bookmark: ${error?.message || "Lỗi không xác định"}`
       );
@@ -100,7 +97,6 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
       >
         {isCreatingBookmark ? "Đang tạo..." : "Tạo Bookmark"}
       </button>
-      {/* Các nút chỉ hiển thị cho Admin */}
       {isAdmin && (
         <>
           <Link

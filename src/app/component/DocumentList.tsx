@@ -4,14 +4,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 import { deleteDocument } from "@/services/documentService";
-import { useCurrentUser } from "@/hooks/customHooks"; // Import useCurrentUser
-
-interface Document {
-  _id: string;
-  title: string;
-  field: string;
-  username: string;
-}
+import { useCurrentUser } from "@/hooks/customHooks";
+import { Document } from "@/types/document";
 
 interface Props {
   initialDocuments: Document[];
@@ -27,7 +21,7 @@ export default function DocumentsList({ initialDocuments }: Props) {
   );
   const [token, setToken] = useState<string | null>(null);
 
-  const currentUser = useCurrentUser(); // Get current user
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     setToken(localStorage.getItem("authToken"));
@@ -63,9 +57,9 @@ export default function DocumentsList({ initialDocuments }: Props) {
       setLoadingId(null);
       setDocumentToDeleteId(null);
     }
-  }, [documentToDeleteId, token]); // Add token to dependency array
+  }, [documentToDeleteId, token]);
 
-  const isAdmin = currentUser?.role?.roleName === "admin"; // Check if user is admin
+  const isAdmin = currentUser?.role?.roleName === "admin";
 
   return (
     <div>
@@ -102,7 +96,6 @@ export default function DocumentsList({ initialDocuments }: Props) {
                   {doc.username || "Chưa có mô tả cho tài liệu này."}
                 </p>
               </div>
-              {/* Conditionally render edit and delete buttons */}
               {isAdmin && (
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
                   <Link
@@ -118,6 +111,7 @@ export default function DocumentsList({ initialDocuments }: Props) {
                   >
                     {loadingId === doc._id ? "Đang xóa..." : "Xóa"}
                   </button>
+                  <div className="text-center mt-10"></div>
                 </div>
               )}
             </div>

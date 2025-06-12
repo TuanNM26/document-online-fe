@@ -18,7 +18,6 @@ export async function createBookmarkService(
     try {
       errorData = await response.json();
     } catch (jsonError) {
-      console.error("Failed to parse error response as JSON:", jsonError);
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
     throw new Error(
@@ -50,7 +49,6 @@ export async function getBookmarksService(
     try {
       errorData = await response.json();
     } catch (jsonError) {
-      console.error("Failed to parse error response as JSON:", jsonError);
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
     throw new Error(
@@ -82,7 +80,6 @@ export async function deleteBookmarkService(
     try {
       errorData = await response.json();
     } catch (jsonError) {
-      console.error("Failed to parse error response as JSON:", jsonError);
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
     throw new Error(

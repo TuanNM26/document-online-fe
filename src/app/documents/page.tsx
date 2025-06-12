@@ -4,6 +4,7 @@ import DocumentsList from "../component/documentList";
 import Pagination from "../component/pagination";
 import Link from "next/link";
 import { getNumberParam } from "@/utils/getNumberParam";
+import AddDocumentButton from "../component/addDocument";
 
 export const dynamic = "force-dynamic";
 
@@ -68,12 +69,7 @@ export default async function DocumentsPage({
       <DocumentsList initialDocuments={documents} />
 
       <div className="text-center mt-10">
-        <Link
-          href="/documents/create"
-          className="bg-green-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-md hover:shadow-lg transition-all duration-200"
-        >
-          + Thêm Tài liệu Mới
-        </Link>
+        <AddDocumentButton />
       </div>
 
       <Pagination

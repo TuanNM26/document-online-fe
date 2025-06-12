@@ -63,7 +63,6 @@ export async function getDocumentDetail(id: string): Promise<Document> {
 
   if (!res.ok) {
     const errorText = await res.text();
-    console.error(`API Error for document ${id}: ${res.status} - ${errorText}`);
     throw new Error(
       `Failed to fetch document ${id}: ${errorText || res.statusText}`
     );
@@ -92,7 +91,6 @@ export async function getDocument(
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Lỗi trong getDocument:", error);
     throw error;
   }
 }
@@ -128,9 +126,6 @@ export async function createDocument(
 
   if (!res.ok) {
     const errorText = await res.text();
-    console.error(
-      `API Error when creating document: ${res.status} - ${errorText}`
-    );
     throw new Error(`Không thể tạo tài liệu: ${errorText || res.statusText}`);
   }
 }
