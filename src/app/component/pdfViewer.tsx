@@ -14,38 +14,58 @@ export default function PDFViewer({ filePath }: PDFViewerProps) {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const loadPDF = async () => {
       const loadingTask = pdfjsLib.getDocument(filePath);
       const pdf = await loadingTask.promise;
-      setNumPages(pdf.numPages);
+      if (isCancelled) return;
 
-      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      setNumPages(pdf.numPages);
+      const renderPage = async (pageNumber: number) => {
         const page = await pdf.getPage(pageNumber);
-        const scale = 1.5;
-        const viewport = page.getViewport({ scale, rotation: page.rotate });
+        const scale = 2;
+        const rotation = (page.rotate || 0) % 360;
+        const viewport = page.getViewport({ scale, rotation });
 
         const canvas = canvasRefs.current[pageNumber - 1];
-        if (!canvas) continue;
+        if (!canvas) return;
 
         const context = canvas.getContext("2d");
+        if (!context) return;
+
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
         const renderContext = {
-          canvasContext: context!,
+          canvasContext: context,
           viewport,
         };
 
-        await page.render(renderContext).promise;
+        const renderTask = page.render(renderContext);
+        try {
+          await renderTask.promise;
+        } catch (err: any) {
+          if (err?.name !== "RenderingCancelledException") {
+          }
+        }
+      };
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        if (isCancelled) break;
+        await renderPage(i);
       }
     };
 
     loadPDF().catch((error) => console.error("PDF load error:", error));
+
+    return () => {
+      isCancelled = true;
+    };
   }, [filePath]);
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-semibold mb-2"></h3>
       <div className="space-y-6">
         {Array.from({ length: numPages }, (_, i) => (
           <canvas

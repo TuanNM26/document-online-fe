@@ -33,7 +33,7 @@ export default async function DocumentDetailPage({
 
   try {
     document = await getDocumentDetail(id);
-    if (document?.fileType === "pdf" || document?.fileType === "txt") {
+    if (["pdf", "txt", "xlsx"].includes(document?.fileType || "")) {
       pages = await getDocumentPages(id);
     }
   } catch (err: any) {
@@ -123,11 +123,24 @@ export default async function DocumentDetailPage({
             ))}
         </div>
       );
-    } else if (document.fileType === "xlsx" && document.filePath) {
+    } else if (document.fileType === "xlsx" && pages.length > 0) {
       return (
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-2">Nội dung file Excel:</h3>
-          <ExcelViewerClient fileUrl={document.filePath} />
+        <div className="space-y-4 mt-8">
+          <h3 className="text-xl font-semibold mb-2">Xem từng trang Excel:</h3>
+          {pages
+            .sort((a, b) => a.pageNumber - b.pageNumber)
+            .map((page, index) => (
+              <div
+                id={`page-${page._id}`}
+                key={page._id || index}
+                className="border rounded overflow-hidden shadow-sm p-4"
+              >
+                <ExcelViewerClient fileUrl={page.filePath} />
+                {page._id && document && (
+                  <PageActions pageId={page._id} documentId={document._id} />
+                )}
+              </div>
+            ))}
         </div>
       );
     } else if (document.content) {

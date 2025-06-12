@@ -9,8 +9,6 @@ import {
 } from "../../services/pageService";
 import { useRouter } from "next/navigation";
 
-// Giả định bạn có service API để tạo bookmark
-// import { createBookmarkService } from "../../services/bookmarkService"; // <-- Thêm import này
 
 interface PageActionsProps {
   pageId: string;
@@ -21,11 +19,10 @@ export default function PageActions({ pageId, documentId }: PageActionsProps) {
   const currentUser = useCurrentUser();
   const isAdmin = currentUser?.role?.roleName === "admin";
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isCreatingBookmark, setIsCreatingBookmark] = useState(false); // State loading cho bookmark
-  const [bookmarkNote, setBookmarkNote] = useState(""); // State cho input ghi chú bookmark
+  const [isCreatingBookmark, setIsCreatingBookmark] = useState(false);
+  const [bookmarkNote, setBookmarkNote] = useState("");
   const router = useRouter();
 
-  // Xử lý xóa trang (không thay đổi)
   const handleDeleteClick = useCallback(async () => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa trang này không?"

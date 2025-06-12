@@ -31,7 +31,6 @@ export default function Header() {
   }
 
   const isAdmin = currentUser?.role?.roleName === "admin";
-
   return (
     <header className="w-full px-4 py-4 bg-gray-900 text-white shadow">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
