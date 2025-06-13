@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createDocument } from "@/services/documentService";
+import {
+  FaFileAlt,
+  FaTags,
+  FaUpload,
+  FaSpinner,
+  FaPlusCircle,
+} from "react-icons/fa";
 
 export default function CreateDocumentPage() {
   const router = useRouter();
@@ -13,9 +20,11 @@ export default function CreateDocumentPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     setToken(localStorage.getItem("authToken"));
   }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -43,48 +52,58 @@ export default function CreateDocumentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Tạo tài liệu mới
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 p-8">
+      <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <FaPlusCircle className="text-blue-600" /> Tạo tài liệu mới
         </h1>
 
-        {error && <p className="text-red-600 mb-4">{error}</p>}
+        {error && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Tiêu đề */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+              <FaFileAlt className="text-blue-500" />
               Tiêu đề
             </label>
             <input
               type="text"
-              className="w-full border border-gray-300 text-gray-900 rounded px-4 py-2"
+              className="w-full border border-gray-300 text-gray-900 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
 
+          {/* Lĩnh vực */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+              <FaTags className="text-green-500" />
               Lĩnh vực
             </label>
             <input
               type="text"
-              className="w-full border border-gray-300 text-gray-900 rounded px-4 py-2"
+              className="w-full border border-gray-300 text-gray-900 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
               value={field}
               onChange={(e) => setField(e.target.value)}
               required
             />
           </div>
 
+          {/* File */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+              <FaUpload className="text-purple-500" />
               Tệp tài liệu
             </label>
             <input
               type="file"
-              className="w-full text-gray-900"
+              className="w-full text-gray-800"
               accept=".pdf,.doc,.docx,.txt,.md"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
@@ -95,13 +114,24 @@ export default function CreateDocumentPage() {
             />
           </div>
 
+          {/* Submit */}
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
+              className={`flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition-all ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              {loading ? "Đang tạo..." : "Tạo tài liệu"}
+              {loading ? (
+                <>
+                  <FaSpinner className="animate-spin" /> Đang tạo...
+                </>
+              ) : (
+                <>
+                  <FaPlusCircle /> Tạo tài liệu
+                </>
+              )}
             </button>
           </div>
         </form>

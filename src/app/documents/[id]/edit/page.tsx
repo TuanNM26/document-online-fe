@@ -5,6 +5,14 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { fetchDocumentById, updateDocument } from "@/services/documentService";
 import { useAdminGuard } from "@/app/component/adminProtect";
+import {
+  FaFileAlt,
+  FaTags,
+  FaUpload,
+  FaSave,
+  FaSpinner,
+  FaArrowLeft,
+} from "react-icons/fa";
 
 interface Document {
   _id: string;
@@ -18,23 +26,23 @@ interface Document {
 
 export default function EditDocumentPage() {
   useAdminGuard({ redirectTo: "/forbidden" });
+
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
 
   const [document, setDocument] = useState<Document | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [field, setField] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [currentFilePath, setCurrentFilePath] = useState<string | undefined>();
   const [currentFileType, setCurrentFileType] = useState<string | undefined>();
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     setToken(localStorage.getItem("authToken"));
   }, []);
@@ -45,7 +53,6 @@ export default function EditDocumentPage() {
         const data = await fetchDocumentById(id);
         setDocument(data);
         setTitle(data.title);
-        setDescription(data.description || "");
         setField(data.field || "");
         setCurrentFilePath(data.filePath);
         setCurrentFileType(data.fileType);
@@ -55,19 +62,8 @@ export default function EditDocumentPage() {
         setLoading(false);
       }
     };
-
-    if (id) {
-      getDocument();
-    }
+    if (id) getDocument();
   }, [id]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    } else {
-      setSelectedFile(null);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,12 +73,8 @@ export default function EditDocumentPage() {
     try {
       const formData = new FormData();
       formData.append("title", title);
-      formData.append("description", description);
       formData.append("field", field);
-      if (selectedFile) {
-        formData.append("file", selectedFile);
-      }
-
+      if (selectedFile) formData.append("file", selectedFile);
       if (!token) throw new Error("Không tìm thấy token xác thực.");
 
       await updateDocument(id, formData, token);
@@ -97,43 +89,26 @@ export default function EditDocumentPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-xl text-gray-700">Đang tải tài liệu...</p>
+        <p className="text-xl text-gray-600 animate-pulse">
+          Đang tải tài liệu...
+        </p>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !document) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Lỗi</h2>
-          <p className="text-gray-700 mb-6">{error}</p>
-          <Link
-            href="/documents"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Quay lại danh sách tài liệu
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (!document) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Không tìm thấy tài liệu
-          </h2>
-          <p className="text-gray-700 mb-6">
-            Tài liệu với ID "{id}" không tồn tại hoặc đã bị xóa.
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-6 rounded-lg shadow text-center">
+          <h2 className="text-2xl font-semibold text-red-600 mb-3">Lỗi</h2>
+          <p className="text-gray-700 mb-4">
+            {error || `Tài liệu với ID "${id}" không tồn tại.`}
           </p>
           <Link
             href="/documents"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
           >
-            Quay lại danh sách tài liệu
+            Quay lại danh sách
           </Link>
         </div>
       </div>
@@ -141,106 +116,102 @@ export default function EditDocumentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 p-8">
+      <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <Link
             href={`/documents/${id}`}
-            className="text-blue-500 hover:text-blue-700 flex items-center"
+            className="flex items-center text-blue-500 hover:text-blue-700"
           >
-            &larr; Quay lại chi tiết tài liệu
+            <FaArrowLeft className="mr-2" /> Quay lại chi tiết
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           Chỉnh sửa Tài liệu
         </h1>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="title"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Tiêu đề:
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-2 font-medium text-gray-700 flex items-center gap-2">
+              <FaFileAlt className="text-blue-500" /> Tiêu đề
             </label>
             <input
               type="text"
-              id="title"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="field"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Lĩnh vực:
+
+          <div>
+            <label className="block mb-2 font-medium text-gray-700 flex items-center gap-2">
+              <FaTags className="text-green-500" /> Lĩnh vực
             </label>
             <input
               type="text"
-              id="field"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={field}
               onChange={(e) => setField(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="fileUpload"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Thay thế File (PDF/DOCX, v.v.):
+
+          <div>
+            <label className="block mb-2 font-medium text-gray-700 flex items-center gap-2">
+              <FaUpload className="text-purple-500" /> Thay file
             </label>
             <input
               type="file"
-              id="fileUpload"
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-              onChange={handleFileChange}
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+              onChange={(e) =>
+                e.target.files?.[0] && setSelectedFile(e.target.files[0])
+              }
+              className="block w-full text-sm border border-gray-300 rounded bg-gray-50 px-3 py-2"
             />
             {selectedFile && (
-              <p className="mt-2 text-sm text-gray-600">
-                File đã chọn: {selectedFile.name}
+              <p className="text-sm mt-1 text-gray-600">
+                📎 File mới: {selectedFile.name}
               </p>
             )}
             {currentFilePath && (
-              <p className="mt-2 text-sm text-gray-600">
-                File hiện tại:{" "}
+              <p className="text-sm mt-1 text-gray-600">
+                📂 Hiện tại:{" "}
                 <a
                   href={currentFilePath}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline break-all"
+                  className="text-blue-500 hover:underline"
                 >
                   {currentFilePath.split("/").pop()} ({currentFileType})
                 </a>
               </p>
             )}
-            {!currentFilePath && (
-              <p className="mt-2 text-sm text-gray-600">
-                Tài liệu này hiện chưa có file.
-              </p>
-            )}
           </div>
-          {error && <p className="text-red-500 text-sm italic mb-4">{error}</p>}
 
-          <div className="flex items-center justify-end gap-4">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <div className="flex justify-end gap-3">
             <Link
               href={`/documents/${id}`}
-              className="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
             >
               Hủy
             </Link>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded disabled:opacity-60"
             >
-              {isSubmitting ? "Đang lưu..." : "Lưu Thay đổi"}
+              {isSubmitting ? (
+                <>
+                  <FaSpinner className="animate-spin" /> Đang lưu...
+                </>
+              ) : (
+                <>
+                  <FaSave /> Lưu thay đổi
+                </>
+              )}
             </button>
           </div>
         </form>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { deleteDocument } from "@/services/documentService";
 import { useCurrentUser } from "@/hooks/customHooks";
 import { Document } from "@/types/document";
+import { FaEdit, FaTrash, FaBook, FaTags, FaUser } from "react-icons/fa";
 
 interface Props {
   initialDocuments: Document[];
@@ -80,38 +81,54 @@ export default function DocumentsList({ initialDocuments }: Props) {
           {documents.map((doc) => (
             <div
               key={doc._id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden"
+              className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden group"
             >
               <div className="p-6">
                 <Link href={`/documents/${doc._id}`} className="block">
-                  <h2 className="text-2xl font-semibold text-blue-600 hover:underline mb-2 line-clamp-1">
-                    Tiêu đề: {doc.title}
+                  <h2 className="text-xl font-bold text-blue-700 group-hover:text-blue-900 transition-colors mb-2 line-clamp-1 flex items-center gap-2">
+                    <FaBook className="text-blue-500" />
+                    {doc.title}
                   </h2>
                 </Link>
-                <p className="text-gray-700 line-clamp-3">
-                  Thể loại: {doc.field || "Chưa có mô tả cho tài liệu này."}
+
+                <p className="flex items-center gap-2 text-sm text-purple-700 mb-1">
+                  <FaTags className="text-purple-500" />
+                  <span>
+                    <span className="font-semibold text-purple-900">
+                      Chuyên mục:
+                    </span>{" "}
+                    {doc.field || "Không rõ"}
+                  </span>
                 </p>
-                <p className="text-gray-700 line-clamp-3">
-                  Người tạo :{" "}
-                  {doc.username || "Chưa có mô tả cho tài liệu này."}
+
+                <p className="flex items-center gap-2 text-sm text-green-700">
+                  <FaUser className="text-green-500" />
+                  <span>
+                    <span className="font-semibold text-green-900">
+                      Người tạo:
+                    </span>{" "}
+                    {doc.username || "Không rõ"}
+                  </span>
                 </p>
               </div>
+
               {isAdmin && (
-                <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+                <div className="px-6 py-3 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
                   <Link
                     href={`/documents/${doc._id}/edit`}
-                    className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                    className="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
                   >
+                    <FaEdit />
                     Chỉnh sửa
                   </Link>
                   <button
                     onClick={() => handleShowConfirm(doc._id)}
                     disabled={loadingId === doc._id}
-                    className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
+                    <FaTrash />
                     {loadingId === doc._id ? "Đang xóa..." : "Xóa"}
                   </button>
-                  <div className="text-center mt-10"></div>
                 </div>
               )}
             </div>
@@ -119,24 +136,26 @@ export default function DocumentsList({ initialDocuments }: Props) {
         </div>
       )}
 
-      {/* Custom Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto">
-            <h3 className="text-lg font-semibold mb-4">Xác nhận xóa</h3>
-            <p className="text-gray-700 mb-6">
-              Bạn có chắc chắn muốn xóa tài liệu này không?
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Xác nhận xóa
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Bạn có chắc chắn muốn xóa tài liệu này không? Hành động này không
+              thể hoàn tác.
             </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={handleCloseConfirm}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                className="px-4 py-2 rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDeleteConfirmed}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                className="px-4 py-2 rounded-md text-white bg-red-500 hover:bg-red-600"
               >
                 Xóa
               </button>

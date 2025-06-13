@@ -8,6 +8,13 @@ import {
   deletePageService,
 } from "../../services/pageService";
 import { useRouter } from "next/navigation";
+import {
+  FaBookmark,
+  FaTrash,
+  FaPen,
+  FaSpinner,
+  FaRegStickyNote,
+} from "react-icons/fa";
 
 interface PageActionsProps {
   pageId: string;
@@ -42,10 +49,12 @@ export default function PageActions({
     try {
       setIsDeleting(true);
       await deletePageService(pageId, token);
-      alert("Đã xóa trang thành công!");
+      alert("✅ Đã xóa trang thành công!");
       onPageDeleted?.(pageId);
     } catch (error: any) {
-      alert(`Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`);
+      alert(
+        `❌ Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -56,11 +65,13 @@ export default function PageActions({
       alert("Vui lòng nhập ghi chú cho bookmark.");
       return;
     }
+
     const token = localStorage.getItem("authToken");
     if (!token) {
       alert("Bạn cần đăng nhập để thực hiện hành động này.");
       return;
     }
+
     setIsCreatingBookmark(true);
     try {
       await createBookmarkService(
@@ -71,47 +82,76 @@ export default function PageActions({
       router.push("/bookmarks");
     } catch (error: any) {
       alert(
-        `Không thể tạo bookmark: ${error?.message || "Lỗi không xác định"}`
+        `❌ Không thể tạo bookmark: ${error?.message || "Lỗi không xác định"}`
       );
     } finally {
       setIsCreatingBookmark(false);
     }
   }, [documentId, pageId, bookmarkNote, router]);
-  if (!currentUser) {
-    return null;
-  }
+
+  if (!currentUser) return null;
+
   return (
-    <div className="mt-4 flex justify-end items-center gap-2">
-      {" "}
-      <input
-        type="text"
-        value={bookmarkNote}
-        onChange={(e) => setBookmarkNote(e.target.value)}
-        placeholder="Ghi chú bookmark"
-        className="border rounded-md px-2 py-1 text-sm w-1/3"
-        disabled={isCreatingBookmark}
-      />
+    <div className="mt-4 flex flex-wrap items-center gap-3 justify-end">
+      {/* Ghi chú bookmark */}
+      <div className="relative">
+        <input
+          type="text"
+          value={bookmarkNote}
+          onChange={(e) => setBookmarkNote(e.target.value)}
+          placeholder="Ghi chú bookmark"
+          className="border rounded-md px-2 py-1 text-sm w-56 pr-8 focus:outline-none focus:ring-1 focus:ring-blue-400"
+          disabled={isCreatingBookmark}
+        />
+        <FaRegStickyNote className="absolute right-2 top-2 text-gray-400 text-sm" />
+      </div>
+
+      {/* Nút tạo bookmark */}
       <button
         onClick={handleCreateBookmarkClick}
         disabled={isCreatingBookmark || !bookmarkNote.trim()}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed" // Điều chỉnh style
+        className={`flex items-center gap-2 px-3 py-1.5 text-sm font-semibold rounded-md transition
+          ${
+            isCreatingBookmark || !bookmarkNote.trim()
+              ? "bg-blue-300 text-white cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
       >
-        {isCreatingBookmark ? "Đang tạo..." : "Tạo Bookmark"}
+        {isCreatingBookmark ? (
+          <>
+            <FaSpinner className="animate-spin" /> Đang tạo...
+          </>
+        ) : (
+          <>
+            <FaBookmark /> Tạo Bookmark
+          </>
+        )}
       </button>
+
+      {/* Nút chỉnh sửa & xóa */}
       {isAdmin && (
         <>
           <Link
             href={`/documents/${documentId}/pages/${pageId}/edit`}
-            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+            className="flex items-center gap-1 text-sm text-yellow-600 hover:text-yellow-700 font-medium"
           >
-            Chỉnh sửa trang
+            <FaPen /> Chỉnh sửa
           </Link>
+
           <button
             onClick={handleDeleteClick}
             disabled={isDeleting}
-            className="text-red-500 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isDeleting ? "Đang xóa..." : "Xóa trang"}
+            {isDeleting ? (
+              <>
+                <FaSpinner className="animate-spin" /> Đang xóa...
+              </>
+            ) : (
+              <>
+                <FaTrash /> Xóa trang
+              </>
+            )}
           </button>
         </>
       )}
