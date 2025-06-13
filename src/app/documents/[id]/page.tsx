@@ -37,7 +37,6 @@ export default async function DocumentDetailPage({
     if (["pdf", "txt", "xlsx"].includes(document?.fileType || "")) {
       pages = await getDocumentPages(id);
     }
-    console.log(pages);
   } catch (err: any) {
     error = err.message || `Không thể tải dữ liệu tài liệu ${params.id}.`;
   }
@@ -92,36 +91,6 @@ export default async function DocumentDetailPage({
           </Link>
           {document && <DocumentActions documentId={document._id} />}
         </div>
-
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {document.title}
-        </h1>
-        {document.description && (
-          <p className="text-gray-700 text-lg mb-6">{document.description}</p>
-        )}
-
-        <p className="text-gray-600 text-sm mb-2">
-          ID: {document._id} | Người đăng: {document.username} | Lĩnh vực:{" "}
-          {document.field}
-        </p>
-        {document.fileType && (
-          <p className="text-gray-600 text-sm mb-2">
-            Loại file: {document.fileType}{" "}
-          </p>
-        )}
-        {document.filePath && (
-          <p className="text-gray-600 text-sm">
-            Đường dẫn file:{" "}
-            <a
-              href={document.filePath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline break-all"
-            >
-              {document.filePath}
-            </a>
-          </p>
-        )}
         <ClientDocumentSection document={document} pages={pages} />
       </div>
     </div>

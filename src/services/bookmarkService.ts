@@ -1,10 +1,15 @@
-import {Bookmark, CreateBookmarkPayload, GetBookmarksResponse} from "../types/bookmark"
+import {
+  Bookmark,
+  CreateBookmarkPayload,
+  GetBookmarksResponse,
+} from "../types/bookmark";
 
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 export async function createBookmarkService(
   payload: CreateBookmarkPayload,
   token: string
 ): Promise<any> {
-  const response = await fetch("http://localhost:3000/bookmarks", {
+  const response = await fetch(`${API_URL}/bookmarks`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +40,7 @@ export async function getBookmarksService(
   limit: number = 10
 ): Promise<GetBookmarksResponse> {
   const response = await fetch(
-    `http://localhost:3000/bookmarks/myBookmark?limit=${limit}&page=${page}`,
+    `${API_URL}/bookmarks/myBookmark?limit=${limit}&page=${page}`,
     {
       method: "GET",
       headers: {
@@ -65,15 +70,12 @@ export async function deleteBookmarkService(
   bookmarkId: string,
   token: string
 ): Promise<void> {
-  const response = await fetch(
-    `http://localhost:3000/bookmarks/${bookmarkId}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     let errorData;

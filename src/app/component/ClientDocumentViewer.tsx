@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDocumentSocket } from "@/hooks/useDocumentSocket";
 import PDFViewerClient from "./pdfViewerClient";
 import TextViewerClient from "./textViewerClient";
@@ -27,6 +27,12 @@ export default function ClientDocumentViewer({
 }: ClientDocumentViewerProps) {
   const [pages, setPages] = useState<Page[]>(initialPages);
 
+  useEffect(() => {
+    if (document.filePath) {
+      console.log("FilePath changed, refetching pages");
+      fetchPages();
+    }
+  }, [document.filePath]);
   const fetchPages = async () => {
     try {
       const res = await fetch(
@@ -70,8 +76,8 @@ export default function ClientDocumentViewer({
         id={`page-${page._id}`}
         className="p-4 border rounded mb-4"
       >
-        {document.fileType === "pdf" && (
-          <PDFViewerClient filePath={page.filePath} />
+        {document.fileType === "pdf" && page.filePath && (
+          <PDFViewerClient filePath={`${page.filePath}`} />
         )}
         {document.fileType === "txt" && (
           <TextViewerClient

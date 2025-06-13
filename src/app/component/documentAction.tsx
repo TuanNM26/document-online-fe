@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/hooks/customHooks";
 
 interface DocumentActionsProps {
   documentId: string;
+  onDocumentUpdated?: (updatedDoc: Document) => void;
 }
 
 export default function DocumentActions({ documentId }: DocumentActionsProps) {
