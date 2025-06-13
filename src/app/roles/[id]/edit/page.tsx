@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Role } from "@/types/role";
 import { fetchRoleById, updateRole } from "@/services/roleService";
 import { useAdminGuard } from "@/app/component/adminProtect";
+import { toast } from "sonner";
 
 export default function EditRolePage() {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -35,7 +36,7 @@ export default function EditRolePage() {
     e.preventDefault();
 
     if (!roleName) {
-      alert("Tên role là bắt buộc");
+      toast.error("Tên role là bắt buộc");
       return;
     }
 
@@ -46,10 +47,10 @@ export default function EditRolePage() {
     );
 
     if (success) {
-      alert("Cập nhật thành công!");
+      toast.success("Cập nhật thành công!");
       router.push("/roles");
     } else {
-      alert("Có lỗi xảy ra khi cập nhật.");
+      toast.error("Có lỗi xảy ra khi cập nhật.");
     }
   };
 

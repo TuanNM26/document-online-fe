@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -39,7 +40,7 @@ export default function RegisterPage() {
         const errorData = await res.json();
         throw new Error(errorData.message || "Đăng ký thất bại.");
       }
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
       router.push("/auth/login");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi đăng ký.");

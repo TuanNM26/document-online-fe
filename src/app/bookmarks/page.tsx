@@ -16,6 +16,7 @@ import {
   FaExclamationCircle,
   FaSignInAlt,
 } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function BookmarkPage() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
@@ -30,7 +31,7 @@ export default function BookmarkPage() {
 
   useEffect(() => {
     if (!currentUser && !isLoading) {
-      alert("Bạn cần đăng nhập để xem bookmark.");
+      toast.error("Bạn cần đăng nhập để xem bookmark.");
     }
   }, [currentUser, isLoading]);
 
@@ -70,7 +71,7 @@ export default function BookmarkPage() {
     if (window.confirm("Bạn có chắc chắn muốn xóa bookmark này không?")) {
       const token = localStorage.getItem("authToken");
       if (!token) {
-        alert("Bạn cần đăng nhập để thực hiện hành động này.");
+        toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
         return;
       }
 
@@ -82,7 +83,7 @@ export default function BookmarkPage() {
           prev.filter((bookmark) => bookmark._id !== bookmarkId)
         );
       } catch (err: any) {
-        alert(`Không thể xóa bookmark: ${err.message || "Lỗi không xác định"}`);
+        toast.error(`Không thể xóa bookmark: ${err.message || "Lỗi không xác định"}`);
       } finally {
         setDeletingBookmarkId(null);
       }

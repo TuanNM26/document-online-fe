@@ -13,6 +13,7 @@ import {
   FaSpinner,
   FaArrowLeft,
 } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface Document {
   _id: string;
@@ -78,9 +79,11 @@ export default function EditDocumentPage() {
       if (!token) throw new Error("Không tìm thấy token xác thực.");
 
       await updateDocument(id, formData, token);
+      toast.success("✅ Thành công!");
       router.push(`/documents/${id}`);
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi cập nhật tài liệu.");
+      toast.error(`❌ Vui lòng thử lại.\n${err}`);
     } finally {
       setIsSubmitting(false);
     }

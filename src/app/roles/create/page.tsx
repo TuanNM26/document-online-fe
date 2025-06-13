@@ -5,6 +5,7 @@ import { createRole } from "@/services/roleService";
 import { useRouter } from "next/navigation";
 import { useAdminGuard } from "@/app/component/adminProtect";
 import { FaUserShield, FaAlignLeft, FaSave } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function CreateRolePage() {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -24,10 +25,10 @@ export default function CreateRolePage() {
 
     setLoading(false);
     if (success) {
-      alert("Tạo role thành công!");
+      toast.success("Tạo role thành công!");
       router.push("/roles");
     } else {
-      alert("Tạo role thất bại. Vui lòng thử lại.");
+      toast.error("Tạo role thất bại. Vui lòng thử lại.");
     }
   };
 

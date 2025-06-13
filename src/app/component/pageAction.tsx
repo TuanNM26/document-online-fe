@@ -15,6 +15,7 @@ import {
   FaSpinner,
   FaRegStickyNote,
 } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface PageActionsProps {
   pageId: string;
@@ -42,17 +43,17 @@ export default function PageActions({
 
     const token = localStorage.getItem("authToken");
     if (!token) {
-      alert("Bạn cần đăng nhập để thực hiện hành động này.");
+      toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
       return;
     }
 
     try {
       setIsDeleting(true);
       await deletePageService(pageId, token);
-      alert("✅ Đã xóa trang thành công!");
+      toast.success("✅ Đã xóa trang thành công!");
       onPageDeleted?.(pageId);
     } catch (error: any) {
-      alert(
+      toast.error(
         `❌ Không thể xóa trang: ${error?.message || "Lỗi không xác định"}`
       );
     } finally {
@@ -62,13 +63,13 @@ export default function PageActions({
 
   const handleCreateBookmarkClick = useCallback(async () => {
     if (!bookmarkNote.trim()) {
-      alert("Vui lòng nhập ghi chú cho bookmark.");
+      toast.error("Vui lòng nhập ghi chú cho bookmark.");
       return;
     }
 
     const token = localStorage.getItem("authToken");
     if (!token) {
-      alert("Bạn cần đăng nhập để thực hiện hành động này.");
+      toast.error("Bạn cần đăng nhập để thực hiện hành động này.");
       return;
     }
 
@@ -81,7 +82,7 @@ export default function PageActions({
       setBookmarkNote("");
       router.push("/bookmarks");
     } catch (error: any) {
-      alert(
+      toast.error(
         `❌ Không thể tạo bookmark: ${error?.message || "Lỗi không xác định"}`
       );
     } finally {

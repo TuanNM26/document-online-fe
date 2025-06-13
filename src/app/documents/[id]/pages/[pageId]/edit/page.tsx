@@ -7,6 +7,7 @@ import Link from "next/link";
 import { updatePageFileService } from "../../../../../../services/pageService";
 import { useCurrentUser } from "@/hooks/customHooks";
 import { useAdminGuard } from "@/app/component/adminProtect";
+import { toast } from "sonner";
 
 export default function EditPageFilePage() {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -59,7 +60,7 @@ export default function EditPageFilePage() {
           token
         );
 
-        alert("File trang đã được cập nhật thành công!");
+        toast.success("File trang đã được cập nhật thành công!");
         router.push(`/documents/${id}`);
       } catch (err: any) {
         setError(
@@ -67,6 +68,7 @@ export default function EditPageFilePage() {
             err.message || "Lỗi không xác định"
           }`
         );
+        toast.error(`❌Vui lòng thử lại.\n${err}`);
       } finally {
         setIsLoading(false);
       }

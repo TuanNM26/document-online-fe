@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminGuard } from "../component/adminProtect";
 import { Trash2, Pencil, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export default function RolesPage() {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -32,7 +33,7 @@ export default function RolesPage() {
     if (success) {
       setRoles((prev) => prev.filter((role) => role.id !== id));
     } else {
-      alert("Xóa thất bại, vui lòng thử lại.");
+      toast.error("Xóa thất bại, vui lòng thử lại.");
     }
   };
 

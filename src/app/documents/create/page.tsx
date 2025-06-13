@@ -10,6 +10,7 @@ import {
   FaSpinner,
   FaPlusCircle,
 } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function CreateDocumentPage() {
   const router = useRouter();
@@ -43,9 +44,11 @@ export default function CreateDocumentPage() {
       formData.append("file", file);
 
       await createDocument(formData, token as string);
+      toast.success("✅ Thành công!");
       router.push("/documents");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi tạo tài liệu.");
+      toast.error(`❌Vui lòng thử lại.\n${err}`);
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,7 @@ import { fetchUserById, updateUser } from "@/services/userService";
 import type { User } from "@/types/user";
 import { fetchRoles } from "@/services/roleService";
 import { useAdminGuard } from "@/app/component/adminProtect";
+import { toast } from "sonner";
 
 export default function EditUserPage() {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -36,8 +37,7 @@ export default function EditUserPage() {
       try {
         const roleList = await fetchRoles(token!);
         setRoles(roleList);
-      } catch (error) {
-      }
+      } catch (error) {}
       setLoading(false);
     };
     loadUser();
@@ -52,7 +52,7 @@ export default function EditUserPage() {
     if (success) {
       router.push("/users");
     } else {
-      alert("Cập nhật thất bại, vui lòng thử lại.");
+      toast.error("Cập nhật thất bại, vui lòng thử lại.");
     }
 
     setSaving(false);

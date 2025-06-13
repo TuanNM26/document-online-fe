@@ -11,6 +11,7 @@ import {
   FaFileAlt,
   FaSpinner,
 } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function AddPage({ params }: { params: { id: string } }) {
   useAdminGuard({ redirectTo: "/forbidden" });
@@ -31,10 +32,10 @@ export default function AddPage({ params }: { params: { id: string } }) {
 
     try {
       await uploadPage(params.id, selectedFile);
-      alert("✅ Tải lên thành công!");
+      toast.success("✅ Tải lên thành công!");
       router.push(`/documents/${params.id}`);
     } catch (err) {
-      alert(`❌ Không thể upload file. Vui lòng thử lại.\n${err}`);
+      toast.error(`❌ Không thể upload file. Vui lòng thử lại.\n${err}`);
     } finally {
       setIsUploading(false);
     }

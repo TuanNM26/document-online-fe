@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminGuard } from "../component/adminProtect";
 import { Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -46,7 +47,7 @@ export default function UsersPage() {
     if (success) {
       setUsers((prev) => prev.filter((user) => user.id !== id));
     } else {
-      alert("Xóa thất bại, vui lòng thử lại.");
+      toast.error("Xóa thất bại, vui lòng thử lại.");
     }
   }
 
