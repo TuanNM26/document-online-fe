@@ -106,12 +106,24 @@ export default function LoginPage() {
             >
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
-            <Link
-              href="/auth/register"
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-            >
-              Chưa có tài khoản? Đăng ký!
-            </Link>
+            <div className="mt-4">
+              <div>
+                <Link
+                  href="/auth/register"
+                  className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                >
+                  Chưa có tài khoản? Đăng ký!
+                </Link>
+              </div>
+              <div className="mt-2">
+                <Link
+                  href="/auth/forgotPassword"
+                  className="inline-block align-baseline font-bold text-sm text-orange-500 hover:text-orange-800"
+                >
+                  Quên mật khẩu? Lấy Lại!
+                </Link>
+              </div>
+            </div>
           </div>
         </form>
       </div>

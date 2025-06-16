@@ -44,9 +44,10 @@ export default function RegisterPage() {
         throw new Error(errorData.message || "Đăng ký thất bại.");
       }
       toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
-      router.push("/auth/login");
+      router.push("/auth/verify");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi đăng ký.");
+      toast.error("có lỗi khi đăng kí")
     } finally {
       setLoading(false);
     }
