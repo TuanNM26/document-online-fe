@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaLock, FaEnvelope, FaUserCircle } from "react-icons/fa";
+import { login } from "@/services/authService";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,23 +19,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Đăng nhập thất bại.");
-      }
-
-      const data = await res.json();
+      const data = await login(email, password);
       localStorage.setItem("authToken", data.accessToken);
       window.location.href = "/documents";
     } catch (err: any) {

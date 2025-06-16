@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { User, Mail, Lock, Loader } from "lucide-react";
 import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
+import { register } from "@/services/authService";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -23,31 +24,12 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            roleId: "684668708bfa41d5dc6b1547",
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Đăng ký thất bại.");
-      }
+      await register(username, email, password);
       toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
       router.push("/auth/verify");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi đăng ký.");
-      toast.error("có lỗi khi đăng kí")
+      toast.error("Có lỗi khi đăng ký");
     } finally {
       setLoading(false);
     }

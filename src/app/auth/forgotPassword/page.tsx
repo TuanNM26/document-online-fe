@@ -4,7 +4,7 @@ import { useState } from "react";
 import { forgotPassword } from "../../../services/authService";
 import { FiMail, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation"; // ✅ dành cho App Router
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
