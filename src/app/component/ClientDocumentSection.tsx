@@ -44,7 +44,7 @@ export default function ClientDocumentSection({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
         <div>
-          <span className="font-semibold text-gray-900">🆔 ID:</span>{" "}
+          <span className="font-semibold text-gray-900">🆔:</span>{" "}
           <span className="text-gray-600">{document._id}</span>
         </div>
         <div>
