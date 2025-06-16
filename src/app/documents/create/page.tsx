@@ -68,7 +68,6 @@ export default function CreateDocumentPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Tiêu đề */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
               <FaFileAlt className="text-blue-500" />
@@ -83,7 +82,6 @@ export default function CreateDocumentPage() {
             />
           </div>
 
-          {/* Lĩnh vực */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
               <FaTags className="text-green-500" />
@@ -98,7 +96,6 @@ export default function CreateDocumentPage() {
             />
           </div>
 
-          {/* File */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
               <FaUpload className="text-purple-500" />
@@ -117,7 +114,6 @@ export default function CreateDocumentPage() {
             />
           </div>
 
-          {/* Submit */}
           <div className="flex justify-end">
             <button
               type="submit"

@@ -94,7 +94,6 @@ export default function PageActions({
 
   return (
     <div className="mt-4 flex flex-wrap items-center gap-3 justify-end">
-      {/* Ghi chú bookmark */}
       <div className="relative">
         <input
           type="text"
@@ -107,7 +106,6 @@ export default function PageActions({
         <FaRegStickyNote className="absolute right-2 top-2 text-gray-400 text-sm" />
       </div>
 
-      {/* Nút tạo bookmark */}
       <button
         onClick={handleCreateBookmarkClick}
         disabled={isCreatingBookmark || !bookmarkNote.trim()}
@@ -129,7 +127,6 @@ export default function PageActions({
         )}
       </button>
 
-      {/* Nút chỉnh sửa & xóa */}
       {isAdmin && (
         <>
           <Link

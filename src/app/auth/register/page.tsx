@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { User, Mail, Lock, Loader } from "lucide-react";
+import Image from "next/image";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -52,69 +55,97 @@ export default function RegisterPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <div className="flex justify-center mb-6">
+          <FaUserCircle size={60} />
+        </div>
+
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Đăng ký
         </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
             <label
               htmlFor="username"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Tên người dùng:
             </label>
-            <input
-              type="text"
-              id="username"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <User
+                className="absolute left-3 top-2.5 text-gray-400"
+                size={18}
+              />
+              <input
+                type="text"
+                id="username"
+                className="pl-10 pr-3 py-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-400"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4">
+
+          <div>
             <label
               htmlFor="email"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Email:
             </label>
-            <input
-              type="email"
-              id="email"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Mail
+                className="absolute left-3 top-2.5 text-gray-400"
+                size={18}
+              />
+              <input
+                type="email"
+                id="email"
+                className="pl-10 pr-3 py-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4">
+
+          <div>
             <label
               htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               Mật khẩu:
             </label>
-            <input
-              type="password"
-              id="password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Lock
+                className="absolute left-3 top-2.5 text-gray-400"
+                size={18}
+              />
+              <input
+                type="password"
+                id="password"
+                className="pl-10 pr-3 py-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md focus:outline-none flex items-center disabled:opacity-50"
             >
+              {loading && <Loader className="animate-spin mr-2" size={16} />}
               {loading ? "Đang đăng ký..." : "Đăng ký"}
             </button>
             <Link
-              href="/login"
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+              href="/auth/login"
+              className="text-sm text-blue-500 hover:underline"
             >
               Đã có tài khoản? Đăng nhập!
             </Link>

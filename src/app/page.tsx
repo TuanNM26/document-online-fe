@@ -17,15 +17,12 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-wrap items-center justify-around mt-8 sm:w-full">
-          {/* Nút Đăng nhập */}
           <Link href="/auth/login" className="p-6 mt-6 text-left border rounded-xl hover:text-blue-600 focus:text-blue-600 transition duration-150 ease-in-out hover:border-blue-600 w-96">
             <h3 className="text-2xl font-bold">Đăng nhập &rarr;</h3>
             <p className="mt-4 text-xl">
               Truy cập vào tài khoản của bạn để xem và quản lý tài liệu.
             </p>
           </Link>
-
-          {/* Nút Đăng ký */}
           <Link href="/auth/register" className="p-6 mt-6 text-left border rounded-xl hover:text-blue-600 focus:text-blue-600 transition duration-150 ease-in-out hover:border-blue-600 w-96">
             <h3 className="text-2xl font-bold">Đăng ký &rarr;</h3>
             <p className="mt-4 text-xl">
@@ -33,7 +30,6 @@ export default function HomePage() {
             </p>
           </Link>
 
-          {/* Nút Xem Tài liệu (ví dụ: tài liệu công khai hoặc sau khi đăng nhập) */}
           <Link href="/documents" className="p-6 mt-6 text-left border rounded-xl hover:text-blue-600 focus:text-blue-600 transition duration-150 ease-in-out hover:border-blue-600 w-96">
             <h3 className="text-2xl font-bold">Xem Tài liệu &rarr;</h3>
             <p className="mt-4 text-xl">

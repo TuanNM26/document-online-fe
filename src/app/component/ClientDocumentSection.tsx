@@ -80,7 +80,6 @@ export default function ClientDocumentSection({
         )}
       </div>
 
-      {/* Viewer */}
       <div className="mt-6">
         <ClientDocumentViewer document={document} pages={pages} />
       </div>
