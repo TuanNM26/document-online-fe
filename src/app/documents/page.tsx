@@ -67,9 +67,9 @@ export default async function DocumentsPage({
         </div>
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg transition shadow-md"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg transition shadow-md cursor-pointer"
         >
-          Tìm
+          Gửi
         </button>
       </form>
 
