@@ -49,7 +49,7 @@ export default function Header() {
           className="text-2xl font-bold flex items-center gap-2 hover:text-blue-400 transition-colors"
         >
           <FaBook className="text-blue-400" />
-          My Next App
+          Tài liệu online 
         </a>
 
         {isLoggedIn && (
@@ -60,7 +60,7 @@ export default function Header() {
                   href="/"
                   className="flex items-center gap-1 hover:text-blue-300 transition-colors"
                 >
-                  <FaHome /> Home
+                  <FaHome /> Trang chính
                 </a>
               </li>
               <li>
@@ -68,7 +68,7 @@ export default function Header() {
                   href="/documents"
                   className="flex items-center gap-1 hover:text-blue-300 transition-colors"
                 >
-                  <FaFileAlt /> Documents
+                  <FaFileAlt /> Tài liệu
                 </a>
               </li>
               <li>
@@ -76,7 +76,7 @@ export default function Header() {
                   href="/bookmarks"
                   className="flex items-center gap-1 hover:text-blue-300 transition-colors"
                 >
-                  <FaBookmark /> Bookmarks
+                  <FaBookmark /> Dấu trang
                 </a>
               </li>
               {isAdmin && (
@@ -104,7 +104,7 @@ export default function Header() {
                   onClick={handleLogout}
                   className="ml-4 px-3 py-2 bg-red-600 hover:bg-red-700 rounded text-white flex items-center gap-2 transition-colors"
                 >
-                  <FaSignOutAlt /> Logout
+                  <FaSignOutAlt /> Đăng xuất
                 </button>
               </li>
             </ul>

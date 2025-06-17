@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { User, Mail, Lock, Loader } from "lucide-react";
-import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 import { register } from "@/services/authService";
 
@@ -13,7 +12,6 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -25,7 +23,9 @@ export default function RegisterPage() {
 
     try {
       await register(username, email, password);
-      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để nhận mã kích hoạt tài khoản.");
+      toast.success(
+        "Đăng ký thành công! Vui lòng kiểm tra email để nhận mã kích hoạt tài khoản."
+      );
       router.push("/auth/verify");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi đăng ký.");

@@ -27,7 +27,6 @@ export default function ClientDocumentSection({
     setDocument(updated);
   }, []);
 
-  // Chỉ cần lắng nghe document-change ở đây
   useDocumentSocket(document._id, undefined, handleDocumentChange);
 
   return (

@@ -4,13 +4,7 @@ import {
   getDocumentPages,
 } from "../../../services/documentService";
 import { Document } from "@/types/document";
-import PDFViewerClient from "@/app/component/pdfViewerClient";
-import TextViewerClient from "@/app/component/textViewerClient";
-import { useCurrentUser } from "@/hooks/customHooks";
 import DocumentActions from "@/app/component/documentAction";
-import PageActions from "@/app/component/pageAction";
-import ScrollToPage from "@/app/component/scrollPage";
-import ExcelViewerClient from "@/app/component/xlxsViewClient";
 import ClientDocumentSection from "@/app/component/ClientDocumentSection";
 
 interface DocumentDetailPageProps {
