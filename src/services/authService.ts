@@ -1,9 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
-export async function verifyEmail(email: string, code: string) {
-  const res = await fetch(`${API_URL}/auth/verify-email`, {
+export async function verifyEmail(key: string) {
+  const res = await fetch(`${API_URL}/auth/verify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code }),
+    body: JSON.stringify({ key }),
   });
 
   if (!res.ok) throw new Error("Xác minh thất bại");

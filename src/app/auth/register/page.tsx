@@ -25,7 +25,7 @@ export default function RegisterPage() {
 
     try {
       await register(username, email, password);
-      toast.success("Đăng ký thành công! Vui lòng đăng nhập.");
+      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để nhận mã kích hoạt tài khoản.");
       router.push("/auth/verify");
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi khi đăng ký.");

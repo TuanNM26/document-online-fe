@@ -48,7 +48,7 @@ export default async function DocumentsPage({
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50 p-8">
       <h1 className="text-4xl font-extrabold text-blue-800 text-center mb-10 flex items-center justify-center gap-3">
         <FaBook className="text-blue-600" />
-        Document List
+        Danh sách tài liệu
       </h1>
 
       <form
@@ -69,7 +69,7 @@ export default async function DocumentsPage({
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg transition shadow-md cursor-pointer"
         >
-          Gửi
+          Tìm
         </button>
       </form>
 

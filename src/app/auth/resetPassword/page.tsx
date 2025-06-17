@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { resetPassword } from "../../../services/authService";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation"; // ✅ đúng hook
+import { useRouter } from "next/navigation";
 import {
   MailIcon,
   LockIcon,
