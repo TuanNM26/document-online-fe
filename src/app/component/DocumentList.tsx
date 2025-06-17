@@ -7,6 +7,7 @@ import { deleteDocument } from "@/services/documentService";
 import { useCurrentUser } from "@/hooks/customHooks";
 import { Document } from "@/types/document";
 import { FaEdit, FaTrash, FaBook, FaTags, FaUser } from "react-icons/fa";
+import { useHomeDocumentSocket } from "@/hooks/useDocumentHome";
 
 interface Props {
   initialDocuments: Document[];
@@ -62,6 +63,21 @@ export default function DocumentsList({ initialDocuments }: Props) {
 
   const isAdmin = currentUser?.role?.roleName === "admin";
 
+  useHomeDocumentSocket(({ eventType, document }) => {
+    setDocuments((prev) => {
+      if (eventType === "created") {
+        if (prev.some((doc) => doc._id === document._id)) return prev;
+        return [document, ...prev];
+      }
+      if (eventType === "updated") {
+        return prev.map((d) => (d._id === document._id ? document : d));
+      }
+      if (eventType === "deleted") {
+        return prev.filter((d) => d._id !== document._id);
+      }
+      return prev;
+    });
+  });
   return (
     <div>
       {error && (
